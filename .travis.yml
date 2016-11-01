@@ -1,0 +1,12 @@
+language: cpp
+sudo: required
+dist: trusty
+compiler:
+  - g++
+os:
+  - linux
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install libnetcdf-dev cmake libboost-system-dev libboost-filesystem-dev libboost-test-dev -qq
+script:
+  - mkdir build && cd build && cmake .. && make all -j 4 && make test
