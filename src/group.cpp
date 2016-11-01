@@ -14,8 +14,8 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <netcdf/abstract_dataset.hpp>
-#include <netcdf/group.hpp>
+#include <netcdf4_cxx/abstract_dataset.hpp>
+#include <netcdf4_cxx/group.hpp>
 #include <stdexcept>
 
 namespace netcdf {

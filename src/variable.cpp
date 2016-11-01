@@ -14,11 +14,11 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <netcdf/abstract_dataset.hpp>
-#include <netcdf/attribute.hpp>
-#include <netcdf/group.hpp>
-#include <netcdf/object.hpp>
-#include <netcdf/variable.hpp>
+#include <netcdf4_cxx/abstract_dataset.hpp>
+#include <netcdf4_cxx/attribute.hpp>
+#include <netcdf4_cxx/group.hpp>
+#include <netcdf4_cxx/object.hpp>
+#include <netcdf4_cxx/variable.hpp>
 #include <list>
 
 namespace netcdf {

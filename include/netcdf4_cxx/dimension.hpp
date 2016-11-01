@@ -17,8 +17,8 @@
 #pragma once
 
 #include <netcdf.h>
-#include <netcdf/abstract_dataset.hpp>
-#include <netcdf/netcdf.hpp>
+#include <netcdf4_cxx/abstract_dataset.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
 #include <stddef.h>
 #include <string>
 

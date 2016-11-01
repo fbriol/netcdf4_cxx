@@ -17,18 +17,18 @@
 #pragma once
 
 #include <netcdf.h>
-#include <netcdf/object.hpp>
+#include <netcdf4_cxx/object.hpp>
 
 namespace netcdf {
 
 /**
- * Abstract base class, from which Attribute, Variable and Group inherit.
- * It provides the services that are common to both Attribute, Variable and
- * Group.
+ * Abstract base class, from which Attribute, DataSet and Dimension inherit.
+ * It provides the services that are common to both Attribute, DataSet and
+ * Dimension.
  */
 class AbstractDataSet : public Object {
  protected:
-  int id_;  ///<! DataSet ID
+  int id_;  //!< DataSet ID
 
  public:
   /**

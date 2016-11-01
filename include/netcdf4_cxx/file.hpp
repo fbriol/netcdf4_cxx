@@ -16,10 +16,10 @@
 
 #pragma once
 
-#include <netcdf/attribute.hpp>
-#include <netcdf/dataset.hpp>
-#include <netcdf/group.hpp>
-#include <netcdf/netcdf.hpp>
+#include <netcdf4_cxx/attribute.hpp>
+#include <netcdf4_cxx/dataset.hpp>
+#include <netcdf4_cxx/group.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <cstdio>
@@ -41,20 +41,16 @@ class File : public Group {
    * Binary storage format
    */
   enum Format {
-    //!< kNETCDF4
     /*! Files use the version 4 disk format (HDF5) and use the new
      * features of the version 4 API */
     kNetCdf4 = NC_FORMAT_NETCDF4,
-    //!< kNETCDF4_CLASSIC
     /*! Files use the version 4 disk format (HDF5), but do not use any
      * features not found in the version 3 API. They can be read by
      * netCDF 3 clients only if they have been relinked against the netCDF
      * 4 library. They can also be read by HDF5 clients. */
     kClassicNetCdf4 = NC_FORMAT_NETCDF4_CLASSIC,
-    //!< kNETCDF3_CLASSIC
     /*! Files use the original netCDF file format. */
     kClassicNetCdf3 = NC_FORMAT_CLASSIC,
-    //!< kNETCDF3_64BIT
     /*! Files use the original netCDF file format with 64-bit offset
      * format; relaxes limitations on creating very large files */
     k64BitsNetCdf3 = NC_FORMAT_64BIT
@@ -75,11 +71,11 @@ class File : public Group {
    *  w means write; a new file is created, an existing file with the same
    *  name is deleted. a and r+ mean append (in analogy with serial files);
    *  an existing file is opened for reading and writing. Appending s to modes
-   *  w, r+ or a will enable unbuffered shared access to kNETCDF3_CLASSIC or
-   *  kNETCDF3_64BIT formatted files. Unbuffered acesss may be useful even if
+   *  w, r+ or a will enable unbuffered shared access to #kClassicNetCdf3 or
+   *  #k64BitsNetCdf3 formatted files. Unbuffered acesss may be useful even if
    *  you don't need shared access, since it may be faster for programs that
-   *  don't access data sequentially. This option is ignored for kNETCDF4 and
-   *  kNETCDF4_CLASSIC formatted files
+   *  don't access data sequentially. This option is ignored for #kNetCdf4 and
+   *  #kClassicNetCdf4 formatted files
    * @param clobber if True (default), opening a file with mode='w' will
    *  clobber an existing file with the same name. if False, an exception
    *  will be raised if a file with the same name already exists.
@@ -218,7 +214,7 @@ class File : public Group {
    * Put open NetCDF dataset into define mode.
    *
    * For netCDF-4 files (i.e. files created with File::kNetCdf4 in the mode
-   * in their call to Open()), it is not necessary to call SetDefineMode()
+   * in their call to Open()), it is not necessary to call this method.
    */
   void EnterDefineMode() const {
     Check(nc_redef(nc_id_));
@@ -228,7 +224,7 @@ class File : public Group {
    * Leave define mode
    *
    * For netCDF-4 files (i.e. files created with File::kNetCdf4 in the mode
-   * in their call to Open()), it is not necessary to call SetDefineMode()
+   * in their call to Open()), it is not necessary to call this method.
    */
   void LeaveDefineMode() const {
     Check(nc_enddef(nc_id_));

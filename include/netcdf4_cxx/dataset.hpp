@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include <netcdf/attribute.hpp>
-#include <netcdf/netcdf.hpp>
+#include <netcdf4_cxx/attribute.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
 #include <netcdf.h>
 #include <iostream>
 #include <list>
@@ -27,7 +27,9 @@
 namespace netcdf {
 
 /**
- * TODO
+ * Abstract base class, from which Group and Variable inherit.
+ * It provides the services that are common to both Group and
+ * Variable.
  */
 class DataSet : public AbstractDataSet {
  public:

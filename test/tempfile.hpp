@@ -17,8 +17,8 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/system/error_code.hpp>
-#include <netcdf/netcdf.hpp>
-#include <netcdf/object.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/object.hpp>
 #include <netcdf.h>
 #include <iostream>
 #include <string>

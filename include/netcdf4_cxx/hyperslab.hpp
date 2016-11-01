@@ -34,9 +34,9 @@ namespace netcdf {
  */
 class Range {
  private:
-  size_t start_;    ///<! start of interval
-  size_t end_;      ///<! end of interval
-  ptrdiff_t step_;  ///<! spacing between values
+  size_t start_;    //!< start of interval
+  size_t end_;      //!< end of interval
+  ptrdiff_t step_;  //!< spacing between values
 
  public:
   /**
@@ -229,9 +229,9 @@ class Range {
  */
 class Hyperslab {
  private:
-  std::vector<size_t> start_;     ///<! array of start for each range
-  std::vector<size_t> end_;       ///<! array of end for each range
-  std::vector<ptrdiff_t> step_;   ///<! spacing between values for each range
+  std::vector<size_t> start_;     //!< array of start for each range
+  std::vector<size_t> end_;       //!< array of end for each range
+  std::vector<ptrdiff_t> step_;   //!< spacing between values for each range
 
  public:
   /**

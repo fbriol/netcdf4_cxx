@@ -1,0 +1,14 @@
+FIND_PACKAGE(Boost REQUIRED COMPONENTS filesystem system unit_test_framework)
+
+INCLUDE_DIRECTORIES(${BOOST_INCLUDE_DIRS})
+FILE(GLOB SOURCES "*.cpp")
+
+ADD_EXECUTABLE (main_tests ${SOURCES}) 
+TARGET_LINK_LIBRARIES(main_tests
+  netcdf4_cxx
+  ${Boost_FILESYSTEM_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
+  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+)
+
+ADD_TEST (main_tests ${EXECUTABLE_OUTPUT_PATH}/main_tests)

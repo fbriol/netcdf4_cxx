@@ -15,7 +15,7 @@
 */
 
 
-#include <netcdf/file.hpp>
+#include <netcdf4_cxx/file.hpp>
 
 namespace netcdf {
 

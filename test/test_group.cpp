@@ -16,14 +16,14 @@
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
-#include <netcdf/abstract_dataset.hpp>
-#include <netcdf/attribute.hpp>
-#include <netcdf/dataset.hpp>
-#include <netcdf/dimension.hpp>
-#include <netcdf/group.hpp>
-#include <netcdf/netcdf.hpp>
-#include <netcdf/type.hpp>
-#include <netcdf/variable.hpp>
+#include <netcdf4_cxx/abstract_dataset.hpp>
+#include <netcdf4_cxx/attribute.hpp>
+#include <netcdf4_cxx/dataset.hpp>
+#include <netcdf4_cxx/dimension.hpp>
+#include <netcdf4_cxx/group.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/type.hpp>
+#include <netcdf4_cxx/variable.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <list>

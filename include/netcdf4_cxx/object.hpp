@@ -26,7 +26,7 @@ class Group;
  */
 class Object {
  protected:
-  int nc_id_;  ///<! NetCDF ID
+  int nc_id_;  //!< NetCDF ID
 
   /**
    * Default constructor

@@ -14,7 +14,7 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "netcdf/cf.hpp"
+#include <netcdf4_cxx/cf.hpp>
 
 const std::string netcdf::CF::ADD_OFFSET = "add_offset";
 const std::string netcdf::CF::AXIS = "axis";

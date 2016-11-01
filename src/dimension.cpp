@@ -15,8 +15,8 @@
 */
 
 
-#include <netcdf/dimension.hpp>
-#include <netcdf/group.hpp>
+#include <netcdf4_cxx/dimension.hpp>
+#include <netcdf4_cxx/group.hpp>
 #include <algorithm>
 #include <iostream>
 #include <iterator>

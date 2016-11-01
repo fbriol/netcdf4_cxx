@@ -16,10 +16,10 @@
 
 #pragma once
 
-#include <netcdf/abstract_dataset.hpp>
-#include <netcdf/netcdf.hpp>
-#include <netcdf/object.hpp>
-#include <netcdf/type.hpp>
+#include <netcdf4_cxx/abstract_dataset.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/object.hpp>
+#include <netcdf4_cxx/type.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <iostream>

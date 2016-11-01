@@ -16,8 +16,8 @@
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
-#include <netcdf/object.hpp>
-#include <netcdf/type.hpp>
+#include <netcdf4_cxx/object.hpp>
+#include <netcdf4_cxx/type.hpp>
 #include <netcdf.h>
 #include <string>
 #include <utility>

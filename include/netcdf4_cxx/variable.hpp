@@ -16,11 +16,11 @@
 
 #pragma once
 
-#include <netcdf/dataset.hpp>
-#include <netcdf/dimension.hpp>
-#include <netcdf/hyperslab.hpp>
-#include <netcdf/netcdf.hpp>
-#include <netcdf/type.hpp>
+#include <netcdf4_cxx/dataset.hpp>
+#include <netcdf4_cxx/dimension.hpp>
+#include <netcdf4_cxx/hyperslab.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/type.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <functional>

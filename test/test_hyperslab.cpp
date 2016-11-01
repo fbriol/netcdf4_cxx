@@ -16,7 +16,7 @@
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
-#include <netcdf/hyperslab.hpp>
+#include <netcdf4_cxx/hyperslab.hpp>
 
 BOOST_AUTO_TEST_SUITE (test_range)
 

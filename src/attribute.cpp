@@ -15,7 +15,7 @@
 */
 
 
-#include <netcdf/attribute.hpp>
+#include <netcdf4_cxx/attribute.hpp>
 #include <stdlib.h>
 
 namespace netcdf {

@@ -16,8 +16,8 @@
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
-#include <netcdf/abstract_dataset.hpp>
-#include <netcdf/file.hpp>
+#include <netcdf4_cxx/abstract_dataset.hpp>
+#include <netcdf4_cxx/file.hpp>
 
 #include "tempfile.hpp"
 

@@ -14,8 +14,8 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <netcdf/group.hpp>
-#include <netcdf/object.hpp>
+#include <netcdf4_cxx/group.hpp>
+#include <netcdf4_cxx/object.hpp>
 #include <netcdf.h>
 #include <stdexcept>
 

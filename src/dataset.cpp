@@ -15,11 +15,20 @@
 */
 
 
-#include <boost/algorithm/string/case_conv.hpp>
-#include <netcdf/dataset.hpp>
+#include <locale>
+#include <netcdf4_cxx/dataset.hpp>
 #include <stdexcept>
 
 namespace netcdf {
+
+static std::string to_lower_copy(const std::string& s) {
+  std::locale loc;
+  std::string result(s.capacity(), 0);
+  for(auto& item : s) {
+    result.push_back(std::tolower(item, loc));
+  }
+  return result;
+}
 
 std::list<Attribute> DataSet::GetAttributes() const {
   int natts;
@@ -44,13 +53,13 @@ std::shared_ptr<Attribute> DataSet::FindAttribute(const std::string& name,
      bool ignore_case) const {
   // Search an attribute by its name, if ignore case
   if (ignore_case) {
-    auto lower_name = boost::to_lower_copy<std::string>(name);
+    auto lower_name = to_lower_copy(name);
     auto attributes = GetAttributes();
-    auto it = std::find_if(attributes.begin(), attributes.end(),
-                           [&] (const Attribute& attribute) {
-                             return boost::to_lower_copy<std::string>(
-                                 attribute.name()) == lower_name;
-                           });
+    auto it = std::find_if(
+      attributes.begin(), attributes.end(),
+      [&] (const Attribute& attribute) {
+        return to_lower_copy(attribute.name()) == lower_name;
+    });
     if (it != attributes.end())
       return std::make_shared<Attribute>(*it);
   } else {

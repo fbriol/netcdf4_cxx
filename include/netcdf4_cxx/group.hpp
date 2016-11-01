@@ -16,11 +16,11 @@
 
 #pragma once
 
-#include <netcdf/dimension.hpp>
-#include <netcdf/netcdf.hpp>
-#include <netcdf/object.hpp>
-#include <netcdf/type.hpp>
-#include <netcdf/variable.hpp>
+#include <netcdf4_cxx/dimension.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/object.hpp>
+#include <netcdf4_cxx/type.hpp>
+#include <netcdf4_cxx/variable.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <iostream>
@@ -338,7 +338,7 @@ class Group : public DataSet {
   std::list<Group> Walk() const;
 
   /**
-   * Get the root group
+   * Get the root Group
    *
    * @return the root group
    */
@@ -363,14 +363,14 @@ class Group : public DataSet {
   }
 
   /**
-   * Get the Variables contained directly in this group.
+   * Get the Variables contained directly in this Group.
    *
    * @return the list of variables
    */
   std::list<Variable> GetVariables() const;
 
   /**
-   * Copy the group from the netCDF data set to another
+   * Copy the Group from the netCDF data set to another
    *
    * @param target Target group
    * @param variables List of variables to be ignored in the source group
@@ -379,7 +379,7 @@ class Group : public DataSet {
             const std::list<std::string>& variables) const;
 
   /**
-   * Get the user data type defined in this group only
+   * Get the user data type defined in this Group only
    *
    * @return user data type defined
    */
@@ -414,10 +414,10 @@ class Group : public DataSet {
    */
   std::shared_ptr<type::Generic> FindDataType(const std::string& name) const;
 
-  /// Define an iterator over the parent Group
+  //! Define an iterator over the parent Group
   typedef GroupIteratorType<Group> GroupIterator;
 
-  /// Define an constant iterator over the parent Group
+  //! Define an constant iterator over the parent Group
   typedef GroupIteratorType<Group> ConstGroupIterator;
 
   /**

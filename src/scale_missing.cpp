@@ -14,10 +14,10 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <netcdf/attribute.hpp>
-#include <netcdf/cf.hpp>
-#include <netcdf/dataset.hpp>
-#include <netcdf/scale_missing.hpp>
+#include <netcdf4_cxx/attribute.hpp>
+#include <netcdf4_cxx/cf.hpp>
+#include <netcdf4_cxx/dataset.hpp>
+#include <netcdf4_cxx/scale_missing.hpp>
 #include <netcdf.h>
 #include <memory>
 
