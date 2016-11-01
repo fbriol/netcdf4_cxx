@@ -58,11 +58,11 @@ BOOST_AUTO_TEST_CASE( type_constructors ) {
   BOOST_CHECK_EQUAL(12, 12);
 }
 
-BOOST_AUTO_TEST_CASE( test_copy ) {
-  netcdf::File src, tgt;
-  src.Open("/Users/fbriol/Documents/workspace/netcdfcpp/test/test.nc");
-  tgt.Open("/tmp/test.nc", "w", true);
-  src.Copy(tgt);
-}
+// BOOST_AUTO_TEST_CASE( test_copy ) {
+//   netcdf::File src, tgt;
+//   src.Open("/Users/fbriol/Documents/workspace/netcdfcpp/test/test.nc");
+//   tgt.Open("/tmp/test.nc", "w", true);
+//   src.Copy(tgt);
+// }
 
 BOOST_AUTO_TEST_SUITE_END( )
