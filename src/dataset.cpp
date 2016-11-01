@@ -15,6 +15,7 @@
 */
 
 
+#include <algorithm>
 #include <locale>
 #include <netcdf4_cxx/dataset.hpp>
 #include <stdexcept>
