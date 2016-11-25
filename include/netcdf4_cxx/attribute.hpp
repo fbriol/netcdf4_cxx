@@ -59,6 +59,35 @@ class Attribute : public AbstractDataSet {
   }
 
   /**
+   * Copy constructor
+   *
+   * @param rhs right value
+   */
+  Attribute(const Attribute& rhs)
+  	  : name_(rhs.name_) {
+  }
+
+  /**
+   * Move constructor
+   *
+   * @param rhs right value
+   */
+  Attribute(Attribute&& rhs)
+  	  : name_(std::move(rhs.name_)) {
+  }
+
+  /**
+   * Move assignment operator
+   *
+   * @param rhs right value
+   */
+  Attribute& operator=(Attribute&& rhs) {
+    AbstractDataSet::operator =(rhs);
+    name_ = std::move(rhs.name_);
+    return *this;
+  }
+
+  /**
    * Write data to this attribute.
    *
    * @param data_type Attribute type (in memory)

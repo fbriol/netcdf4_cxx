@@ -311,6 +311,40 @@ class Hyperslab {
   }
 
   /**
+   * Copy constructor
+   *
+   * @param rhs right value
+   */
+  Hyperslab(const Hyperslab& rhs)
+      : start_(rhs.start_),
+        end_(rhs.end_),
+        step_(rhs.step_) {
+  }
+
+  /**
+   * Move constructor
+   *
+   * @param rhs right value
+   */
+  Hyperslab(Hyperslab&& rhs)
+      : start_(std::move(rhs.start_)),
+        end_(std::move(rhs.end_)),
+        step_(std::move(rhs.step_)) {
+  }
+
+  /**
+   * Move assignment operator
+   *
+   * @param rhs right value
+   */
+  Hyperslab& operator=(Hyperslab&& rhs) {
+    start_ = std::move(rhs.start_);
+    end_ = std::move(rhs.end_);
+    step_ = std::move(rhs.step_);
+    return *this;
+  }
+
+  /**
    * Get rank - number of Ranges.
    *
    * @return rank
