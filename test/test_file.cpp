@@ -32,21 +32,21 @@ BOOST_AUTO_TEST_CASE( type_constructors ) {
 
   TempFile temp;
   BOOST_CHECK_NO_THROW(
-      file.Open(temp.Path(), "w", false, false, false, netcdf::File::kNetCdf4));
+      file.Open(temp.Path(), "w", false, false, false, netcdf::Format::kNetCdf4));
   BOOST_CHECK_EQUAL(file.GetFilePath(), temp.Path());
-  BOOST_CHECK_EQUAL(file.GetFormat(), netcdf::File::kNetCdf4);
+  BOOST_CHECK(file.GetFormat() == netcdf::Format::kNetCdf4);
   file.Close();
 
   BOOST_CHECK_THROW(
-      file.Open(temp.Path(), "w", false, false, false, netcdf::File::kNetCdf4),
+      file.Open(temp.Path(), "w", false, false, false, netcdf::Format::kNetCdf4),
       netcdf::Error);
   BOOST_CHECK_NO_THROW(
-      file.Open(temp.Path(), "w", true, false, false, netcdf::File::kNetCdf4));
+      file.Open(temp.Path(), "w", true, false, false, netcdf::Format::kNetCdf4));
   file.Close();
 
   BOOST_CHECK_NO_THROW(
       file.Open(temp.Path(), "w", true, false, false,
-                netcdf::File::kClassicNetCdf3));
+                netcdf::Format::kClassicNetCdf3));
   netcdf::Dimension dim = file.AddDimension("x", 10);
   std::vector<netcdf::Dimension> dims( { dim });
   netcdf::Variable var = file.AddVariable("var", netcdf::type::Int(file), dims);
@@ -54,8 +54,27 @@ BOOST_AUTO_TEST_CASE( type_constructors ) {
   BOOST_CHECK_THROW(var.Write(values), netcdf::Error);
   file.LeaveDefineMode();
   BOOST_CHECK_NO_THROW(var.Write(values));
+  TempFile file_copy;
+  netcdf::File copy;
+  copy.Open(file_copy.Path(), "w", false, false, false);
+  file.Copy(copy);
+  auto src_dims = file.GetDimensions();
+  auto dst_dims = copy.GetDimensions();
+  BOOST_CHECK_EQUAL(src_dims.size(), dst_dims.size());
+  for(auto ix = 0; ix < src_dims.size(); ++ix) {
+    BOOST_CHECK_EQUAL(src_dims[ix].GetLength(), dst_dims[ix].GetLength());
+  }
 
-  BOOST_CHECK_EQUAL(12, 12);
+  auto src_vars = file.GetVariables();
+  auto dst_vars = copy.GetVariables();
+  BOOST_CHECK_EQUAL(src_vars.size(), dst_vars.size());
+  var = dst_vars.front();
+  std::vector<int> dst_var;
+  var.Read(dst_var);
+  BOOST_CHECK_EQUAL_COLLECTIONS(dst_var.begin(), dst_var.end(), values.begin(),
+                                values.end());
+
+
 }
 
 // BOOST_AUTO_TEST_CASE( test_copy ) {

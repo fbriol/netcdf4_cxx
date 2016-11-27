@@ -31,31 +31,31 @@
 namespace netcdf {
 
 /**
+ * Binary storage format
+ */
+enum class Format {
+  /*! Files use the version 4 disk format (HDF5) and use the new
+   * features of the version 4 API */
+  kNetCdf4 = NC_FORMAT_NETCDF4,
+  /*! Files use the version 4 disk format (HDF5), but do not use any
+   * features not found in the version 3 API. They can be read by
+   * netCDF 3 clients only if they have been relinked against the netCDF
+   * 4 library. They can also be read by HDF5 clients. */
+  kClassicNetCdf4 = NC_FORMAT_NETCDF4_CLASSIC,
+  /*! Files use the original netCDF file format. */
+  kClassicNetCdf3 = NC_FORMAT_CLASSIC,
+  /*! Files use the original netCDF file format with 64-bit offset
+   * format; relaxes limitations on creating very large files */
+  k64BitsNetCdf3 = NC_FORMAT_64BIT
+};
+
+/**
  * A netCDF File is a collection of dimensions, groups, variables and
  * attributes. Together they describe the meaning of data and relations
  * among data fields stored in a netCDF file
  */
 class File : public Group {
  public:
-  /**
-   * Binary storage format
-   */
-  enum Format {
-    /*! Files use the version 4 disk format (HDF5) and use the new
-     * features of the version 4 API */
-    kNetCdf4 = NC_FORMAT_NETCDF4,
-    /*! Files use the version 4 disk format (HDF5), but do not use any
-     * features not found in the version 3 API. They can be read by
-     * netCDF 3 clients only if they have been relinked against the netCDF
-     * 4 library. They can also be read by HDF5 clients. */
-    kClassicNetCdf4 = NC_FORMAT_NETCDF4_CLASSIC,
-    /*! Files use the original netCDF file format. */
-    kClassicNetCdf3 = NC_FORMAT_CLASSIC,
-    /*! Files use the original netCDF file format with 64-bit offset
-     * format; relaxes limitations on creating very large files */
-    k64BitsNetCdf3 = NC_FORMAT_64BIT
-  };
-
   /**
    * Constructor
    */
@@ -89,7 +89,7 @@ class File : public Group {
        bool clobber = true,
        const bool diskless = false,
        const bool persist = false,
-       const Format format = kNetCdf4)
+       const Format format = Format::kNetCdf4)
       : Group() {
     Open(filename, mode, clobber, diskless, persist, format);
   }
@@ -111,7 +111,7 @@ class File : public Group {
             bool clobber = true,
             const bool diskless = false,
             const bool persist = false,
-            const Format format = kNetCdf4);
+            const Format format = Format::kNetCdf4);
 
   /**
    * Destructor
@@ -159,27 +159,6 @@ class File : public Group {
   }
 
   /**
-   * Copy this netCDF File to another
-   *
-   * @param target Target File
-   */
-  void Copy(File& target) const {
-    Copy(target, std::list<std::string> { });
-  }
-
-  /**
-   * Copy this netCDF File to another
-   *
-   * @param target Target File
-   * @param variables List of variable names to be ignored in the source group.
-   *    The name of the variable must be in the long form (ie as
-   *    group1/group2/../VariableName)
-   */
-  void Copy(const File& target, const std::list<std::string>& variables) const {
-    Group::Copy(target, variables);
-  }
-
-  /**
    * Get the NetCDF library version used
    *
    * @return the NetCDF library version
@@ -204,10 +183,10 @@ class File : public Group {
    *
    * @return the binary format of the file
    */
-  File::Format GetFormat() const {
+  Format GetFormat() const {
     int result;
     Check(nc_inq_format(nc_id_, &result));
-    return static_cast<File::Format>(result);
+    return static_cast<Format>(result);
   }
 
   /**

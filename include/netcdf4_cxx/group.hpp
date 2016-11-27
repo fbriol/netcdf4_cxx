@@ -376,7 +376,7 @@ class Group : public DataSet {
    * @param variables List of variables to be ignored in the source group
    */
   void Copy(const Group& target,
-            const std::list<std::string>& variables) const;
+            const std::list<std::string>& variables = std::list<std::string> { }) const;
 
   /**
    * Get the user data type defined in this Group only
@@ -415,10 +415,10 @@ class Group : public DataSet {
   std::shared_ptr<type::Generic> FindDataType(const std::string& name) const;
 
   //! Define an iterator over the parent Group
-  typedef GroupIteratorType<Group> GroupIterator;
+  using GroupIterator = GroupIteratorType<Group>;
 
   //! Define an constant iterator over the parent Group
-  typedef GroupIteratorType<Group> ConstGroupIterator;
+  using ConstGroupIterator = GroupIteratorType<Group>;
 
   /**
    * Return an iterator to the beginning

@@ -80,8 +80,12 @@ class AbstractDataSet : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are different
    */
-  bool operator !=(const AbstractDataSet& rhs) const {
-    return Object::operator !=(rhs) or id_ != rhs.id_;
+  bool operator !=(const Object& rhs) const override {
+    const AbstractDataSet* inherited = dynamic_cast<const AbstractDataSet*>(&rhs);
+    if (inherited != nullptr) {
+      return Object::operator !=(rhs) or id_ != inherited->id_;
+    }
+    return true;
   }
 
   /**
@@ -90,8 +94,12 @@ class AbstractDataSet : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are equal
    */
-  bool operator ==(const AbstractDataSet& rhs) const {
-    return Object::operator ==(rhs) and id_ == rhs.id_;
+  bool operator ==(const Object& rhs) const override {
+    const AbstractDataSet* inherited = dynamic_cast<const AbstractDataSet*>(&rhs);
+    if (inherited != nullptr) {
+      return Object::operator ==(rhs) and id_ == inherited->id_;
+    }
+    return false;
   }
 };
 

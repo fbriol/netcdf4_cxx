@@ -32,7 +32,8 @@ BOOST_AUTO_TEST_CASE( type_byte ) {
   Object object;
   netcdf::type::Byte type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kByte);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kByte));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(signed char));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -52,7 +53,8 @@ BOOST_AUTO_TEST_CASE( type_char ) {
   Object object;
   netcdf::type::Char type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kChar);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kChar));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(char));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), false);
@@ -72,7 +74,8 @@ BOOST_AUTO_TEST_CASE( type_double ) {
   Object object;
   netcdf::type::Double type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kDouble);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kDouble));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(double));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), true);
   BOOST_CHECK_EQUAL(type.IsIntegral(), false);
@@ -92,7 +95,8 @@ BOOST_AUTO_TEST_CASE( type_float) {
   Object object;
   netcdf::type::Float type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kFloat);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kFloat));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(float));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), true);
   BOOST_CHECK_EQUAL(type.IsIntegral(), false);
@@ -112,7 +116,7 @@ BOOST_AUTO_TEST_CASE( type_int ) {
   Object object;
   netcdf::type::Int type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kInt);
+  BOOST_CHECK_EQUAL(type.id(), static_cast<int>(netcdf::type::Primitive::kInt));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(int));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -132,7 +136,8 @@ BOOST_AUTO_TEST_CASE( type_int64 ) {
   Object object;
   netcdf::type::Int64 type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kInt64);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kInt64));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(long long));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -152,7 +157,8 @@ BOOST_AUTO_TEST_CASE( type_short ) {
   Object object;
   netcdf::type::Short type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kShort);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kShort));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(short));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -172,7 +178,8 @@ BOOST_AUTO_TEST_CASE( type_string ) {
   Object object;
   netcdf::type::String type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kString);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kString));
   BOOST_CHECK_EQUAL(type.GetSize(), 8);
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), false);
@@ -192,7 +199,8 @@ BOOST_AUTO_TEST_CASE( type_unsigned_byte ) {
   Object object;
   netcdf::type::UnsignedByte type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kUByte);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kUByte));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(unsigned char));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -212,7 +220,8 @@ BOOST_AUTO_TEST_CASE( type_unsigned_short ) {
   Object object;
   netcdf::type::UnsignedShort type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kUShort);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kUShort));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(unsigned short));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -232,7 +241,8 @@ BOOST_AUTO_TEST_CASE( type_unsigned_int ) {
   Object object;
   netcdf::type::UnsignedInt type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kUInt);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kUInt));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(unsigned int));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -252,7 +262,8 @@ BOOST_AUTO_TEST_CASE( type_unsigned_int64 ) {
   Object object;
   netcdf::type::UnsignedInt64 type(object);
   BOOST_CHECK_NE(type.nc_id(), 0);
-  BOOST_CHECK_EQUAL(type.id(), netcdf::type::kUInt64);
+  BOOST_CHECK_EQUAL(type.id(),
+                    static_cast<int>(netcdf::type::Primitive::kUInt64));
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(unsigned long long));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), true);
@@ -270,7 +281,7 @@ BOOST_AUTO_TEST_CASE( type_unsigned_int64 ) {
 // netcdf::type::UnsignedEnum
 BOOST_AUTO_TEST_CASE( type_enum ) {
   Object object;
-  netcdf::type::Enum type(object, "Days", netcdf::type::kShort);
+  netcdf::type::Enum type(object, "Days", netcdf::type::Primitive::kShort);
   type.Insert(std::pair<std::string, short>("Monday", 1));
   type.Insert(std::pair<std::string, short>("Tuesday", 2));
   type.Insert(std::pair<std::string, short>("Wednesday", 3));
@@ -281,8 +292,9 @@ BOOST_AUTO_TEST_CASE( type_enum ) {
 
   BOOST_CHECK_EQUAL(type.GetName(), "Days");
   BOOST_CHECK_EQUAL(type.GetNMembers(), 7);
-  BOOST_CHECK_EQUAL(type.GetPrimitive(), netcdf::type::kEnum);
-  BOOST_CHECK_EQUAL(type.GetBaseType().GetPrimitive(), netcdf::type::kShort);
+  BOOST_CHECK(type.GetPrimitive() == netcdf::type::Primitive::kEnum);
+  BOOST_CHECK(
+      type.GetBaseType().GetPrimitive() == netcdf::type::Primitive::kShort);
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
   BOOST_CHECK_EQUAL(type.IsIntegral(), false);
   BOOST_CHECK_EQUAL(type.IsNumeric(), false);
@@ -361,8 +373,9 @@ BOOST_AUTO_TEST_CASE( type_vlen ) {
   Object object;
   netcdf::type::VLen type(object, "MyVarLen", netcdf::type::Int(object));
 
-  BOOST_CHECK_EQUAL(type.GetPrimitive(), netcdf::type::kVLen);
-  BOOST_CHECK_EQUAL(type.GetBaseType().GetPrimitive(), netcdf::type::kInt);
+  BOOST_CHECK(type.GetPrimitive() == netcdf::type::Primitive::kVLen);
+  BOOST_CHECK(
+      type.GetBaseType().GetPrimitive() == netcdf::type::Primitive::kInt);
   BOOST_CHECK_EQUAL(type.GetName(), "MyVarLen");
   BOOST_CHECK_EQUAL(type.GetSize(), 16);
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
@@ -383,7 +396,7 @@ BOOST_AUTO_TEST_CASE( type_opaque ) {
   Object object;
   netcdf::type::Opaque type(object, "MyOpaque", 64);
 
-  BOOST_CHECK_EQUAL(type.GetPrimitive(), netcdf::type::kOpaque);
+  BOOST_CHECK(type.GetPrimitive() == netcdf::type::Primitive::kOpaque);
   BOOST_CHECK_EQUAL(type.GetName(), "MyOpaque");
   BOOST_CHECK_EQUAL(type.GetSize(), 64);
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);
@@ -444,15 +457,18 @@ BOOST_AUTO_TEST_CASE( type_compound ) {
   BOOST_CHECK_EQUAL(type.GetMemberOffset(2), NC_COMPOUND_OFFSET(Compound, c));
   BOOST_CHECK_EQUAL(type.GetMemberOffset(3), NC_COMPOUND_OFFSET(Compound, d));
   BOOST_CHECK_EQUAL(type.GetMemberOffset(4), NC_COMPOUND_OFFSET(Compound, e));
-  BOOST_CHECK_EQUAL(type.GetMemberClass(0).GetPrimitive(), netcdf::type::kChar);
-  BOOST_CHECK_EQUAL(type.GetMemberClass(1).GetPrimitive(),
-                    netcdf::type::kShort);
-  BOOST_CHECK_EQUAL(type.GetMemberClass(2).GetPrimitive(), netcdf::type::kInt);
-  BOOST_CHECK_EQUAL(type.GetMemberClass(3).GetPrimitive(),
-                    netcdf::type::kFloat);
-  BOOST_CHECK_EQUAL(type.GetMemberClass(4).GetPrimitive(),
-                    netcdf::type::kDouble);
-  BOOST_CHECK_EQUAL(type.GetPrimitive(), netcdf::type::kCompound);
+  BOOST_CHECK(
+      type.GetMemberClass(0).GetPrimitive() == netcdf::type::Primitive::kChar);
+  BOOST_CHECK(
+      type.GetMemberClass(1).GetPrimitive() == netcdf::type::Primitive::kShort);
+  BOOST_CHECK(
+      type.GetMemberClass(2).GetPrimitive() == netcdf::type::Primitive::kInt);
+  BOOST_CHECK(
+      type.GetMemberClass(3).GetPrimitive() == netcdf::type::Primitive::kFloat);
+  BOOST_CHECK(
+      type.GetMemberClass(4).GetPrimitive()
+          == netcdf::type::Primitive::kDouble);
+  BOOST_CHECK(type.GetPrimitive() == netcdf::type::Primitive::kCompound);
   BOOST_CHECK_EQUAL(type.GetName(), "MyCompound");
   BOOST_CHECK_EQUAL(type.GetSize(), sizeof(Compound));
   BOOST_CHECK_EQUAL(type.IsFloatingPoint(), false);

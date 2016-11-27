@@ -46,6 +46,12 @@ class Object {
 
  public:
   /**
+   * Destructor
+   */
+  virtual ~Object() {
+  }
+
+  /**
    * Get the Group
    *
    * @return The Group handled by this instance
@@ -76,7 +82,7 @@ class Object {
    * @param rhs Other object to compare
    * @return true if the two instances are different
    */
-  bool operator != (const Object& rhs) const {
+  virtual bool operator != (const Object& rhs) const {
     return nc_id_ != rhs.nc_id_;
   }
 
@@ -86,7 +92,7 @@ class Object {
    * @param rhs Other object to compare
    * @return true if the two instances are equal
    */
-  bool operator == (const Object& rhs) const {
+  virtual bool operator == (const Object& rhs) const {
     return nc_id_ == rhs.nc_id_;
   }
 };

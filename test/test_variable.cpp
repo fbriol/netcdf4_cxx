@@ -37,7 +37,8 @@ BOOST_AUTO_TEST_CASE( test_accessor ) {
              &varid);
 
   netcdf::Variable var(object, varid);
-  BOOST_CHECK_EQUAL(var.GetDataType().GetPrimitive(), netcdf::type::kShort);
+  BOOST_CHECK(
+      var.GetDataType().GetPrimitive() == netcdf::type::Primitive::kShort);
   BOOST_CHECK_EQUAL(var.GetRank(), shape.size());
 
   for (auto& item : var.GetDimensions()) {

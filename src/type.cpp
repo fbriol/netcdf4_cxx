@@ -23,29 +23,29 @@ namespace netcdf {
 type::Primitive type::Generic::GetPrimitive() const {
   switch (id_) {
     case NC_BYTE:
-      return kByte;
+      return Primitive::kByte;
     case NC_UBYTE:
-      return kUByte;
+      return Primitive::kUByte;
     case NC_CHAR:
-      return kChar;
+      return Primitive::kChar;
     case NC_SHORT:
-      return kShort;
+      return Primitive::kShort;
     case NC_USHORT:
-      return kUShort;
+      return Primitive::kUShort;
     case NC_INT:
-      return kInt;
+      return Primitive::kInt;
     case NC_UINT:
-      return kUInt;
+      return Primitive::kUInt;
     case NC_INT64:
-      return kInt64;
+      return Primitive::kInt64;
     case NC_UINT64:
-      return kUInt64;
+      return Primitive::kUInt64;
     case NC_FLOAT:
-      return kFloat;
+      return Primitive::kFloat;
     case NC_DOUBLE:
-      return kDouble;
+      return Primitive::kDouble;
     case NC_STRING:
-      return kString;
+      return Primitive::kString;
     default:
       int type;
       Check(
@@ -58,37 +58,37 @@ type::Primitive type::Generic::GetPrimitive() const {
 std::string type::Generic::GetPrimitiveName() const {
   type::Primitive type = GetPrimitive();
   switch (type) {
-    case kByte:
+    case Primitive::kByte:
       return "byte";
-    case kUByte:
+    case Primitive::kUByte:
       return "unsigned byte";
-    case kChar:
+    case Primitive::kChar:
       return "char";
-    case kShort:
+    case Primitive::kShort:
       return "short";
-    case kUShort:
+    case Primitive::kUShort:
       return "unsigned short";
-    case kInt:
+    case Primitive::kInt:
       return "int";
-    case kUInt:
+    case Primitive::kUInt:
       return "unsigned int";
-    case kInt64:
+    case Primitive::kInt64:
       return "long long";
-    case kUInt64:
+    case Primitive::kUInt64:
       return "unsigned long long";
-    case kFloat:
+    case Primitive::kFloat:
       return "float";
-    case kDouble:
+    case Primitive::kDouble:
       return "double";
-    case kString:
+    case Primitive::kString:
       return "string";
-    case kVLen:
+    case Primitive::kVLen:
       return "vlen";
-    case kOpaque:
+    case Primitive::kOpaque:
       return "opaque";
-    case kEnum:
+    case Primitive::kEnum:
       return "enum";
-    case kCompound:
+    case Primitive::kCompound:
       return "compound";
     default:
       throw std::runtime_error("unreachable");
@@ -96,28 +96,28 @@ std::string type::Generic::GetPrimitiveName() const {
 }
 
 type::Enum type::Generic::GetEnum() const {
-  if (GetPrimitive() != kEnum)
+  if (GetPrimitive() != Primitive::kEnum)
     std::logic_error(
         GetName() + " is not an enumeration type");
   return Enum(*this, id_);
 }
 
 type::VLen type::Generic::GetVLen() const {
-  if (GetPrimitive() != kVLen)
+  if (GetPrimitive() != Primitive::kVLen)
     std::logic_error(
         GetName() + " is not a variable length type");
   return VLen(*this, id_);
 }
 
 type::Opaque type::Generic::GetOpaque() const {
-  if (GetPrimitive() != kOpaque)
+  if (GetPrimitive() != Primitive::kOpaque)
     std::logic_error(
         GetName() + " is not an opaque type");
   return Opaque(*this, id_);
 }
 
 type::Compound type::Generic::GetCompound() const {
-  if (GetPrimitive() != kCompound)
+  if (GetPrimitive() != Primitive::kCompound)
     std::logic_error(
         GetName() + " is not a compound type");
   return Compound(*this, id_);
@@ -127,16 +127,16 @@ void type::Generic::Copy(const Object& target) const {
   type::Primitive type = GetPrimitive();
 
   switch (type) {
-    case kEnum:
+    case Primitive::kEnum:
       GetEnum().Copy(target);
       break;
-    case kVLen:
+    case Primitive::kVLen:
       GetVLen().Copy(target);
       break;
-    case kOpaque:
+    case Primitive::kOpaque:
       GetOpaque().Copy(target);
       break;
-    case kCompound:
+    case Primitive::kCompound:
       GetCompound().Copy(target);
       break;
     default:
@@ -150,42 +150,42 @@ void type::Enum::Copy(const Object& other) const {
   size_t num_member = GetNMembers();
 
   switch (type) {
-    case kByte:
-    case kUByte: {
+    case Primitive::kByte:
+    case Primitive::kUByte: {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<signed char>(Value<signed char>(ix));
       }
     }
       break;
-    case kUShort:
-    case kShort: {
+    case Primitive::kUShort:
+    case Primitive::kShort: {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<short>(Value<short>(ix));
       }
     }
       break;
-    case kInt:
-    case kUInt: {
+    case Primitive::kInt:
+    case Primitive::kUInt: {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<int>(Value<int>(ix));
       }
     }
       break;
-    case kInt64:
-    case kUInt64: {
+    case Primitive::kInt64:
+    case Primitive::kUInt64: {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<long long>(Value<long long>(ix));
       }
     }
       break;
-    case kChar:
-    case kFloat:
-    case kDouble:
-    case kString:
-    case kVLen:
-    case kOpaque:
-    case kEnum:
-    case kCompound:
+    case Primitive::kChar:
+    case Primitive::kFloat:
+    case Primitive::kDouble:
+    case Primitive::kString:
+    case Primitive::kVLen:
+    case Primitive::kOpaque:
+    case Primitive::kEnum:
+    case Primitive::kCompound:
     default:
       throw std::runtime_error("unreachable");
   }

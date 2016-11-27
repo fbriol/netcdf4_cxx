@@ -31,7 +31,7 @@ namespace type {
 /**
  * netCDF primitive data type
  */
-enum Primitive {
+enum class Primitive {
   kNotAType = NC_NAT,       //!< kNotAType not a type
   kByte = NC_BYTE,          //!< kByte signed 1 byte integer
   kChar = NC_CHAR,          //!< kChar ISO/ASCII character
@@ -70,9 +70,28 @@ class Generic : public Object {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit Generic(const Object& object, const nc_type type)
+  explicit Generic(const Object& object,
+                   const nc_type type)
       : Object(object),
         id_(type) {
+  }
+
+  /**
+   * Builds a new data type
+   *
+   * @param object NetCDF Object
+   * @param type Type ID
+   */
+  explicit Generic(const Object& object,
+                   const Primitive type)
+      : Object(object),
+        id_(static_cast<int>(type)) {
+  }
+
+  /**
+   * Destructor
+   */
+  virtual ~Generic() {
   }
 
   /**
@@ -126,7 +145,7 @@ class Generic : public Object {
    * @return true if enumerate type
    */
   bool IsEnum() const {
-    return GetPrimitive() == kEnum;
+    return GetPrimitive() == Primitive::kEnum;
   }
 
   /**
@@ -135,7 +154,7 @@ class Generic : public Object {
    * @return true if compound type
    */
   bool IsCompound() const {
-    return GetPrimitive() == kCompound;
+    return GetPrimitive() == Primitive::kCompound;
   }
 
   /**
@@ -144,7 +163,7 @@ class Generic : public Object {
    * @return true if variable length type
    */
   bool IsVLen() const {
-    return GetPrimitive() == kVLen;
+    return GetPrimitive() == Primitive::kVLen;
   }
 
   /**
@@ -153,7 +172,7 @@ class Generic : public Object {
    * @return true if opaque type
    */
   bool IsOpaque() const {
-    return GetPrimitive() == kOpaque;
+    return GetPrimitive() == Primitive::kOpaque;
   }
 
   /**
@@ -217,7 +236,7 @@ class Generic : public Object {
    *
    * @param target NetCDF Object
    */
-  void Copy(const Object& target) const;
+  virtual void Copy(const Object& target) const;
 
   /**
    * Promote this instance the an Enum data type.
@@ -257,8 +276,12 @@ class Generic : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are different
    */
-  bool operator !=(const Generic& rhs) const {
-    return Object::operator !=(rhs) or id_ != rhs.id_;
+  bool operator !=(const Object& rhs) const override {
+    const Generic* inherited = dynamic_cast<const Generic*>(&rhs);
+    if (inherited != nullptr) {
+      return Object::operator !=(rhs) or id_ != inherited->id_;
+    }
+    return true;
   }
 
   /**
@@ -267,8 +290,12 @@ class Generic : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are equal
    */
-  bool operator ==(const Generic& rhs) const {
-    return Object::operator ==(rhs) and id_ == rhs.id_;
+  bool operator ==(const Object& rhs) const override {
+    const Generic* inherited = dynamic_cast<const Generic*>(&rhs);
+    if (inherited != nullptr) {
+      return Object::operator ==(rhs) and id_ == inherited->id_;
+    }
+    return false;
   }
 };
 
@@ -439,7 +466,8 @@ class Enum : public Generic {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit Enum(const Object& object, const nc_type type)
+  explicit Enum(const Object& object,
+                const nc_type type)
       : Generic(object, type) {
   }
 
@@ -451,10 +479,11 @@ class Enum : public Generic {
    *  kByte, kUbyte, kShort, kUShort, kInt, kUInt, kInt64, kUInt64.
    * @param name NetCDF names of new type.
    */
-  explicit Enum(const Object& object, const std::string& name,
+  explicit Enum(const Object& object,
+                const std::string& name,
                 const Primitive base_type)
-      : Generic(object, kNotAType) {
-    Check(nc_def_enum(nc_id_, base_type, name.c_str(), &id_));
+      : Generic(object, Primitive::kNotAType) {
+    Check(nc_def_enum(nc_id_, static_cast<int>(base_type), name.c_str(), &id_));
   }
 
   /**
@@ -485,7 +514,7 @@ class Enum : public Generic {
    *
    * @param target NetCDF Object
    */
-  void Copy(const Object& target) const;
+  void Copy(const Object& target) const override;
 
   /**
    * Get the number of members defined for this Enum type
@@ -546,7 +575,8 @@ class VLen : public Generic {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit VLen(const Object& object, const nc_type type)
+  explicit VLen(const Object& object,
+                const nc_type type)
       : Generic(object, type) {
   }
 
@@ -557,9 +587,10 @@ class VLen : public Generic {
    * @param name NetCDF names of the created type
    * @param type The type of the base type of the VLEN.
    */
-  explicit VLen(const Object& object, const std::string& name,
+  explicit VLen(const Object& object,
+                const std::string& name,
                 const Generic& type)
-      : Generic(object, kNotAType) {
+      : Generic(object, Primitive::kNotAType) {
     Check(nc_def_vlen(nc_id_, name.c_str(), type.id(), &id_));
   }
 
@@ -579,7 +610,7 @@ class VLen : public Generic {
    *
    * @param target NetCDF Object
    */
-  void Copy(const Object& target) const {
+  void Copy(const Object& target) const override {
     type::VLen(target, GetName(), GetBaseType());
   }
 };
@@ -595,7 +626,8 @@ class Opaque : public Generic {
    * @param object NetCDF Object
    * @param type type ID
    */
-  explicit Opaque(const Object& object, const nc_type type)
+  explicit Opaque(const Object& object,
+                  const nc_type type)
       : Generic(object, type) {
   }
 
@@ -606,9 +638,10 @@ class Opaque : public Generic {
    * @param name NetCDF names of the new type
    * @param size The size of each opaque object in bytes.
    */
-  explicit Opaque(const Object& object, const std::string& name,
+  explicit Opaque(const Object& object,
+                  const std::string& name,
                   const size_t size)
-      : Generic(object, kNotAType) {
+      : Generic(object, Primitive::kNotAType) {
     Check(nc_def_opaque(nc_id_, size, name.c_str(), &id_));
   }
 
@@ -617,7 +650,7 @@ class Opaque : public Generic {
    *
    * @param target NetCDF Object
    */
-  void Copy(const Object& target) const {
+  void Copy(const Object& target) const override {
     type::Opaque(target, GetName(), GetSize());
   }
 };
@@ -633,7 +666,8 @@ class Compound : public Generic {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit Compound(const Object& object, const nc_type type)
+  explicit Compound(const Object& object,
+                    const nc_type type)
       : Generic(object, type) {
   }
 
@@ -644,9 +678,10 @@ class Compound : public Generic {
    * @param name NetCDF names of the created type
    * @param size The size, in bytes, of the compound type
    */
-  explicit Compound(const Object& object, const std::string& name,
+  explicit Compound(const Object& object,
+                    const std::string& name,
                     const size_t size)
-      : Generic(object, kNotAType) {
+      : Generic(object, Primitive::kNotAType) {
     Check(nc_def_compound(nc_id_, size, name.c_str(), &id_));
   }
 
@@ -793,7 +828,8 @@ class Compound : public Generic {
    * @param offset Offset in memory structure of the field to insert
    * @param type The type of the field to be inserted.
    */
-  void InsertMember(const std::string& name, const size_t offset,
+  void InsertMember(const std::string& name,
+                    const size_t offset,
                     const Generic& type) const {
     Check(nc_insert_compound(nc_id_, id_, name.c_str(), offset, type.id()));
   }
@@ -806,8 +842,10 @@ class Compound : public Generic {
    * @param type The type of the field to be inserted
    * @param shape The shape of the array
    */
-  void InsertMember(const std::string& name, const size_t offset,
-                    const Generic& type, const std::vector<int>& shape) const {
+  void InsertMember(const std::string& name,
+                    const size_t offset,
+                    const Generic& type,
+                    const std::vector<int>& shape) const {
     if (shape.empty())
       InsertMember(name, offset, type);
     else {
@@ -822,7 +860,7 @@ class Compound : public Generic {
    *
    * @param target NetCDF Object
    */
-  void Copy(const Object& target) const;
+  void Copy(const Object& target) const override;
 };
 
 }  // namespace type

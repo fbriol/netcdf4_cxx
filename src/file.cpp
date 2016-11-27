@@ -27,7 +27,7 @@ void File::Open(const std::string& filename, const std::string& mode,
   nc_close(nc_id_);
 
   if (mode == "w" || mode == "ws") {
-    Check(nc_set_default_format(format, NULL));
+    Check(nc_set_default_format(static_cast<int>(format), NULL));
 
     flags = clobber ? NC_CLOBBER : NC_NOCLOBBER;
 

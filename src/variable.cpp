@@ -43,8 +43,10 @@ bool Variable::IsCoordinate() const {
   std::vector<Dimension> dimensions = GetDimensions();
   type::Primitive data_type = GetDataType().GetPrimitive();
 
-  if (data_type == type::kCompound || data_type == type::kOpaque
-      || data_type == type::kEnum || data_type == type::kVLen)
+  if (data_type == type::Primitive::kCompound
+      || data_type == type::Primitive::kOpaque
+      || data_type == type::Primitive::kEnum
+      || data_type == type::Primitive::kVLen)
     return false;
 
   if (dimensions.size() == 1) {
@@ -52,7 +54,7 @@ bool Variable::IsCoordinate() const {
       return true;
   } else if (dimensions.size() == 2) {
     if (GetShortName() == dimensions.front().GetShortName()
-        && data_type == type::kChar)
+        && data_type == type::Primitive::kChar)
       return true;
   }
   return false;

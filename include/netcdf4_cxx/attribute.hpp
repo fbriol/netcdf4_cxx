@@ -61,29 +61,33 @@ class Attribute : public AbstractDataSet {
   /**
    * Copy constructor
    *
-   * @param rhs right value
+   * @param rhs right hand side
    */
   Attribute(const Attribute& rhs)
-  	  : name_(rhs.name_) {
+  	  : AbstractDataSet(rhs),
+  	    name_(rhs.name_) {
   }
 
   /**
    * Move constructor
    *
-   * @param rhs right value
+   * @param rhs right hand side
    */
   Attribute(Attribute&& rhs)
-  	  : name_(std::move(rhs.name_)) {
+  	  : AbstractDataSet(rhs),
+  	    name_(std::move(rhs.name_)) {
   }
 
   /**
    * Move assignment operator
    *
-   * @param rhs right value
+   * @param rhs right hand side
    */
   Attribute& operator=(Attribute&& rhs) {
-    AbstractDataSet::operator =(rhs);
-    name_ = std::move(rhs.name_);
+    if (this != &rhs) {
+      AbstractDataSet::operator =(std::move(rhs));
+      name_ = std::move(rhs.name_);
+    }
     return *this;
   }
 
@@ -225,7 +229,7 @@ class Attribute : public AbstractDataSet {
    */
   bool IsText() const {
     type::Primitive data_type = GetDataType().GetPrimitive();
-    return data_type == type::kChar;
+    return data_type == type::Primitive::kChar;
   }
 
   /**
@@ -235,7 +239,7 @@ class Attribute : public AbstractDataSet {
    */
   bool IsString() const {
     type::Primitive data_type = GetDataType().GetPrimitive();
-    return data_type == type::kString;
+    return data_type == type::Primitive::kString;
   }
 
   /**
@@ -360,7 +364,7 @@ class Attribute : public AbstractDataSet {
    * @return the value of the attribute
    */
   template <typename T>
-  T ReadScalar() const {
+  decltype(auto) ReadScalar() const {
     std::vector<T> values;
     return Read(values).at(0);
   }

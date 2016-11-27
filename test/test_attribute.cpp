@@ -38,7 +38,8 @@ BOOST_AUTO_TEST_CASE( test_string ) {
   };
   att.WriteString(strings);
 
-  BOOST_CHECK_EQUAL(att.GetDataType().GetPrimitive(), netcdf::type::kString);
+  BOOST_CHECK(
+      att.GetDataType().GetPrimitive() == netcdf::type::Primitive::kString);
   BOOST_CHECK_EQUAL(att.IsString(), true);
   BOOST_CHECK_EQUAL(att.IsText(), false);
   BOOST_CHECK_EQUAL(att.name(), "attribute");
@@ -58,7 +59,7 @@ BOOST_AUTO_TEST_CASE( test_text ) {
   att = netcdf::Attribute(object, "attribute");
   att.WriteText(text);
 
-  BOOST_CHECK_EQUAL(att.GetDataType().GetPrimitive(), netcdf::type::kChar);
+  BOOST_CHECK(att.GetDataType().GetPrimitive() == netcdf::type::Primitive::kChar);
   BOOST_CHECK_EQUAL(att.IsString(), false);
   BOOST_CHECK_EQUAL(att.IsText(), true);
   BOOST_CHECK_EQUAL(att.GetLength(), text.size());
@@ -116,7 +117,7 @@ BOOST_AUTO_TEST_CASE( test_compound ) {
     BOOST_CHECK_EQUAL(item.a, in[idx].a);
     BOOST_CHECK_EQUAL(item.b, in[idx++].b);
   }
-  BOOST_CHECK_EQUAL(att.GetDataType().GetPrimitive(), netcdf::type::kCompound);
+  BOOST_CHECK(att.GetDataType().GetPrimitive() == netcdf::type::Primitive::kCompound);
   BOOST_CHECK_EQUAL(att.IsString(), false);
   BOOST_CHECK_EQUAL(att.IsText(), false);
   BOOST_CHECK_EQUAL(att.GetLength(), in.size());
