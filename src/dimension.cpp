@@ -14,12 +14,11 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <netcdf4_cxx/dimension.hpp>
-#include <netcdf4_cxx/group.hpp>
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <netcdf4_cxx/dimension.hpp>
+#include <netcdf4_cxx/group.hpp>
 #include <vector>
 
 namespace netcdf {
@@ -27,14 +26,12 @@ namespace netcdf {
 bool Dimension::IsUnlimited() const {
   int num_unlimited_dimensions;
 
-  Check(nc_inq_unlimdims(nc_id_, &num_unlimited_dimensions,
-                            NULL));
+  Check(nc_inq_unlimdims(nc_id_, &num_unlimited_dimensions, nullptr));
 
   if (num_unlimited_dimensions != 0) {
     std::vector<int> unlimited_dimensions(num_unlimited_dimensions);
-    Check(
-        nc_inq_unlimdims(nc_id_, &num_unlimited_dimensions,
-                         &unlimited_dimensions[0]));
+    Check(nc_inq_unlimdims(nc_id_, &num_unlimited_dimensions,
+                           &unlimited_dimensions[0]));
     return std::find(unlimited_dimensions.begin(), unlimited_dimensions.end(),
                      id_) != unlimited_dimensions.end();
   }
@@ -47,7 +44,7 @@ std::string Dimension::GetLongName() const {
 
 void Dimension::Copy(const Object& object) const {
   Group(object).AddDimension(GetShortName(),
-                             IsUnlimited() ? NC_UNLIMITED: GetLength());
+                             IsUnlimited() ? NC_UNLIMITED : GetLength());
 }
 
 }  // namespace netcdf

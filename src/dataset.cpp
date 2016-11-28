@@ -14,7 +14,6 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include <algorithm>
 #include <locale>
 #include <netcdf4_cxx/dataset.hpp>
@@ -25,7 +24,7 @@ namespace netcdf {
 static std::string to_lower_copy(const std::string& s) {
   std::locale loc;
   std::string result(s.capacity(), 0);
-  for(auto& item : s) {
+  for (auto& item : s) {
     result.push_back(std::tolower(item, loc));
   }
   return result;
@@ -51,18 +50,16 @@ std::list<Attribute> DataSet::GetAttributes() const {
 }
 
 std::shared_ptr<Attribute> DataSet::FindAttribute(const std::string& name,
-     bool ignore_case) const {
+                                                  bool ignore_case) const {
   // Search an attribute by its name, if ignore case
   if (ignore_case) {
     auto lower_name = to_lower_copy(name);
     auto attributes = GetAttributes();
     auto it = std::find_if(
-      attributes.begin(), attributes.end(),
-      [&] (const Attribute& attribute) {
-        return to_lower_copy(attribute.name()) == lower_name;
-    });
-    if (it != attributes.end())
-      return std::make_shared<Attribute>(*it);
+        attributes.begin(), attributes.end(), [&](const Attribute& attribute) {
+          return to_lower_copy(attribute.name()) == lower_name;
+        });
+    if (it != attributes.end()) return std::make_shared<Attribute>(*it);
   } else {
     // Query the C-API to get the attribute by its name
     int id;

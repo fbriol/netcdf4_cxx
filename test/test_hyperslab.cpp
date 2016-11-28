@@ -18,9 +18,9 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <netcdf4_cxx/hyperslab.hpp>
 
-BOOST_AUTO_TEST_SUITE (test_range)
+BOOST_AUTO_TEST_SUITE(test_range)
 
-BOOST_AUTO_TEST_CASE( test_default_constructor ) {
+BOOST_AUTO_TEST_CASE(test_default_constructor) {
   netcdf::Range object;
   BOOST_CHECK_EQUAL(object.GetSize(), 0);
   BOOST_CHECK_THROW(object.Item(5), std::out_of_range);
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE( test_default_constructor ) {
   BOOST_CHECK_EQUAL(object.IsEmpty(), true);
 }
 
-BOOST_AUTO_TEST_CASE( test_built_from_shape ) {
+BOOST_AUTO_TEST_CASE(test_built_from_shape) {
   netcdf::Range object(10);
   BOOST_CHECK_EQUAL(object.GetSize(), 10);
   BOOST_CHECK_EQUAL(object.Index(5), 5);
@@ -43,12 +43,12 @@ BOOST_AUTO_TEST_CASE( test_built_from_shape ) {
   BOOST_CHECK_EQUAL(object.IsEmpty(), false);
 
   BOOST_REQUIRE(object.GetSize() == 10);
-  std::vector<size_t> ref( { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }), res;
+  std::vector<size_t> ref({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}), res;
   res = static_cast<std::vector<size_t> >(object);
   BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), res.begin(), res.end());
 }
 
-BOOST_AUTO_TEST_CASE( test_built_from_range ) {
+BOOST_AUTO_TEST_CASE(test_built_from_range) {
   netcdf::Range object(2, 10);
   BOOST_CHECK_EQUAL(object.GetSize(), 8);
   BOOST_CHECK_EQUAL(object.Index(5), 3);
@@ -60,12 +60,12 @@ BOOST_AUTO_TEST_CASE( test_built_from_range ) {
   BOOST_CHECK_EQUAL(object.IsEmpty(), false);
 
   BOOST_REQUIRE(object.GetSize() == 8);
-  std::vector<size_t> ref( { 2, 3, 4, 5, 6, 7, 8, 9 });
+  std::vector<size_t> ref({2, 3, 4, 5, 6, 7, 8, 9});
   std::vector<size_t> res = static_cast<std::vector<size_t> >(object);
   BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), res.begin(), res.end());
 }
 
-BOOST_AUTO_TEST_CASE( test_built_from_complete_definition ) {
+BOOST_AUTO_TEST_CASE(test_built_from_complete_definition) {
   netcdf::Range object(12, 53, 7);
   BOOST_CHECK_EQUAL(object.GetSize(), 6);
   BOOST_CHECK_EQUAL(object.Index(26), 2);
@@ -83,12 +83,12 @@ BOOST_AUTO_TEST_CASE( test_built_from_complete_definition ) {
   BOOST_CHECK_THROW(object.Index(48), std::out_of_range);
 
   BOOST_REQUIRE(object.GetSize() == 6);
-  std::vector<size_t> ref( { 12, 19, 26, 33, 40, 47 });
+  std::vector<size_t> ref({12, 19, 26, 33, 40, 47});
   std::vector<size_t> res = static_cast<std::vector<size_t> >(object);
   BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), res.begin(), res.end());
 }
 
-BOOST_AUTO_TEST_CASE( test_built_from_invalid_definition ) {
+BOOST_AUTO_TEST_CASE(test_built_from_invalid_definition) {
   netcdf::Range object(12, 1, 1);
   BOOST_CHECK_EQUAL(object.GetSize(), 0);
   BOOST_CHECK_EQUAL(object.Contains(5), false);
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE( test_built_from_invalid_definition ) {
   BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), res.begin(), res.end());
 }
 
-BOOST_AUTO_TEST_CASE( test_built_from_reverse_range ) {
+BOOST_AUTO_TEST_CASE(test_built_from_reverse_range) {
   netcdf::Range object(12, 1, -1);
   BOOST_CHECK_EQUAL(object.GetSize(), 11);
   BOOST_CHECK_EQUAL(object.Contains(5), true);
@@ -114,16 +114,16 @@ BOOST_AUTO_TEST_CASE( test_built_from_reverse_range ) {
   BOOST_CHECK_EQUAL(object.First(), 12);
   BOOST_CHECK_EQUAL(object.Last(), 2);
   BOOST_CHECK_EQUAL(object.IsEmpty(), false);
-  std::vector<size_t> ref( { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 });
+  std::vector<size_t> ref({12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2});
   std::vector<size_t> res = static_cast<std::vector<size_t> >(object);
   BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), res.begin(), res.end());
 }
 
-BOOST_AUTO_TEST_SUITE_END( )
+BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_SUITE (test_hyperslab)
+BOOST_AUTO_TEST_SUITE(test_hyperslab)
 
-BOOST_AUTO_TEST_CASE( default_constructor ) {
+BOOST_AUTO_TEST_CASE(default_constructor) {
   netcdf::Hyperslab object;
   BOOST_CHECK_EQUAL(object.IsEmpty(), true);
   BOOST_CHECK_EQUAL(object.OnlyAdjacent(), true);
@@ -131,35 +131,35 @@ BOOST_AUTO_TEST_CASE( default_constructor ) {
   BOOST_CHECK_EQUAL(object.GetRank(), 0);
   BOOST_CHECK_EQUAL(object.GetSizeList().size(), 0);
 
-  std::vector<size_t> shape( { 2, 2 });
+  std::vector<size_t> shape({2, 2});
 
   BOOST_CHECK(!(object <= shape));
   BOOST_CHECK(object > shape);
 }
 
-BOOST_AUTO_TEST_CASE( constructor_with_shape ) {
-  std::vector<size_t> shape( { 2, 2 });
+BOOST_AUTO_TEST_CASE(constructor_with_shape) {
+  std::vector<size_t> shape({2, 2});
   netcdf::Hyperslab object(shape);
   BOOST_CHECK_EQUAL(object.IsEmpty(), false);
   BOOST_CHECK_EQUAL(object.OnlyAdjacent(), true);
   BOOST_CHECK_EQUAL(object.GetSize(), 4);
   BOOST_CHECK_EQUAL(object.GetRank(), 2);
-  for (auto& item: object.GetSizeList()) {
+  for (auto& item : object.GetSizeList()) {
     BOOST_CHECK_EQUAL(item, 2);
   }
   BOOST_CHECK((object <= shape));
   BOOST_CHECK(!(object > shape));
-  shape = std::vector<size_t> ( { 4, 4 });
+  shape = std::vector<size_t>({4, 4});
   BOOST_CHECK((object <= shape));
   BOOST_CHECK(!(object > shape));
-  shape = std::vector<size_t> ( { 1, 1 });
+  shape = std::vector<size_t>({1, 1});
   BOOST_CHECK(!(object <= shape));
   BOOST_CHECK(object > shape);
 }
 
-BOOST_AUTO_TEST_CASE( constructor_with_range ) {
-  std::vector<size_t> start( { 1, 3 });
-  std::vector<size_t> shape( { 5, 5 });
+BOOST_AUTO_TEST_CASE(constructor_with_range) {
+  std::vector<size_t> start({1, 3});
+  std::vector<size_t> shape({5, 5});
   netcdf::Hyperslab object(start, shape);
   BOOST_CHECK_EQUAL(object.IsEmpty(), false);
   BOOST_CHECK_EQUAL(object.OnlyAdjacent(), true);
@@ -170,18 +170,18 @@ BOOST_AUTO_TEST_CASE( constructor_with_range ) {
   BOOST_CHECK_EQUAL(size[1], 2);
   BOOST_CHECK((object <= shape));
   BOOST_CHECK(!(object > shape));
-  shape = std::vector<size_t> ( { 4, 4 });
+  shape = std::vector<size_t>({4, 4});
   BOOST_CHECK(object <= shape);
   BOOST_CHECK(!(object > shape));
-  shape = std::vector<size_t> ( { 1, 1 });
+  shape = std::vector<size_t>({1, 1});
   BOOST_CHECK(!(object <= shape));
   BOOST_CHECK(object > shape);
 }
 
-BOOST_AUTO_TEST_CASE( constructor_with_strides ) {
-  std::vector<size_t> start( { 7, 13, 15 });
-  std::vector<size_t> shape( { 15, 30, 60 });
-  std::vector<ptrdiff_t> step( { 3, 7, 11 });
+BOOST_AUTO_TEST_CASE(constructor_with_strides) {
+  std::vector<size_t> start({7, 13, 15});
+  std::vector<size_t> shape({15, 30, 60});
+  std::vector<ptrdiff_t> step({3, 7, 11});
   netcdf::Hyperslab object(start, shape, step);
   BOOST_CHECK_EQUAL(object.IsEmpty(), false);
   BOOST_CHECK_EQUAL(object.OnlyAdjacent(), false);
@@ -193,12 +193,12 @@ BOOST_AUTO_TEST_CASE( constructor_with_strides ) {
   BOOST_CHECK_EQUAL(size[2], 5);
   BOOST_CHECK((object <= shape));
   BOOST_CHECK(!(object > shape));
-  shape = std::vector<size_t> ( { 4, 4, 5 });
+  shape = std::vector<size_t>({4, 4, 5});
   BOOST_CHECK(object <= shape);
   BOOST_CHECK(!(object > shape));
-  shape = std::vector<size_t> ( { 4, 4, 4 });
+  shape = std::vector<size_t>({4, 4, 4});
   BOOST_CHECK(!(object <= shape));
   BOOST_CHECK(object > shape);
 }
 
-BOOST_AUTO_TEST_SUITE_END( )
+BOOST_AUTO_TEST_SUITE_END()

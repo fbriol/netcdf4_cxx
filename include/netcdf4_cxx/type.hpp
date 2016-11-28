@@ -16,11 +16,11 @@
 
 #pragma once
 
-#include <netcdf4_cxx/netcdf.hpp>
-#include <netcdf4_cxx/object.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <map>
+#include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/object.hpp>
 #include <string>
 #include <utility>
 #include <vector>
@@ -70,11 +70,9 @@ class Generic : public Object {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit Generic(const Object& object,
-                   const nc_type type)
+  explicit Generic(const Object& object, const nc_type type) noexcept
       : Object(object),
-        id_(type) {
-  }
+        id_(type) {}
 
   /**
    * Builds a new data type
@@ -82,26 +80,21 @@ class Generic : public Object {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit Generic(const Object& object,
-                   const Primitive type)
+  explicit Generic(const Object& object, const Primitive type) noexcept
       : Object(object),
-        id_(static_cast<int>(type)) {
-  }
+        id_(static_cast<int>(type)) {}
 
   /**
    * Destructor
    */
-  virtual ~Generic() {
-  }
+  virtual ~Generic() noexcept {}
 
   /**
    * Get the netCDF type ID
    *
    * @return the netCDF type ID
    */
-  nc_type id() const {
-    return id_;
-  }
+  nc_type id() const noexcept { return id_; }
 
   /**
    * Get the name of this type
@@ -144,43 +137,35 @@ class Generic : public Object {
    *
    * @return true if enumerate type
    */
-  bool IsEnum() const {
-    return GetPrimitive() == Primitive::kEnum;
-  }
+  bool IsEnum() const { return GetPrimitive() == Primitive::kEnum; }
 
   /**
    * Is this a compound type?
    *
    * @return true if compound type
    */
-  bool IsCompound() const {
-    return GetPrimitive() == Primitive::kCompound;
-  }
+  bool IsCompound() const { return GetPrimitive() == Primitive::kCompound; }
 
   /**
    * Is this a variable length type?
    *
    * @return true if variable length type
    */
-  bool IsVLen() const {
-    return GetPrimitive() == Primitive::kVLen;
-  }
+  bool IsVLen() const { return GetPrimitive() == Primitive::kVLen; }
 
   /**
    * Is this an opaque type?
    *
    * @return true if opaque type
    */
-  bool IsOpaque() const {
-    return GetPrimitive() == Primitive::kOpaque;
-  }
+  bool IsOpaque() const { return GetPrimitive() == Primitive::kOpaque; }
 
   /**
    * Is Float or Double
    *
    * @return true if floating point type
    */
-  bool IsFloatingPoint() const {
+  bool IsFloatingPoint() const noexcept {
     return id_ == NC_FLOAT || id_ == NC_DOUBLE;
   }
 
@@ -189,10 +174,10 @@ class Generic : public Object {
    *
    * @return true if integral
    */
-  bool IsIntegral() const {
-    return id_ == NC_BYTE || id_ == NC_UBYTE || id_ == NC_SHORT
-        || id_ == NC_USHORT || id_ == NC_INT || id_ == NC_UINT
-        || id_ == NC_INT64 || id_ == NC_UINT64;
+  bool IsIntegral() const noexcept {
+    return id_ == NC_BYTE || id_ == NC_UBYTE || id_ == NC_SHORT ||
+           id_ == NC_USHORT || id_ == NC_INT || id_ == NC_UINT ||
+           id_ == NC_INT64 || id_ == NC_UINT64;
   }
 
   /**
@@ -200,36 +185,28 @@ class Generic : public Object {
    *
    * @return true if numeric
    */
-  bool IsNumeric() const {
-    return IsFloatingPoint() || IsIntegral();
-  }
+  bool IsNumeric() const noexcept { return IsFloatingPoint() || IsIntegral(); }
 
   /**
    * Is string or char
    *
    * @return if string or char
    */
-  bool IsString() const {
-    return id_ == NC_STRING || id_ == NC_CHAR;
-  }
+  bool IsString() const noexcept { return id_ == NC_STRING || id_ == NC_CHAR; }
 
   /**
    * Is this a primitive type
    *
    * @return true if primitive type
    */
-  bool IsPrimitive() const {
-    return id_ <= NC_STRING;
-  }
+  bool IsPrimitive() const noexcept { return id_ <= NC_STRING; }
 
   /**
    * Is this a user data type
    *
    * @return true if user type
    */
-  bool IsUserType() const {
-    return id_ > NC_STRING;
-  }
+  bool IsUserType() const noexcept { return id_ > NC_STRING; }
 
   /**
    * Copy this data type to an on other NetCDF Object
@@ -276,10 +253,10 @@ class Generic : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are different
    */
-  bool operator !=(const Object& rhs) const override {
+  bool operator!=(const Object& rhs) const noexcept override {
     const Generic* inherited = dynamic_cast<const Generic*>(&rhs);
     if (inherited != nullptr) {
-      return Object::operator !=(rhs) or id_ != inherited->id_;
+      return Object::operator!=(rhs) or id_ != inherited->id_;
     }
     return true;
   }
@@ -290,10 +267,10 @@ class Generic : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are equal
    */
-  bool operator ==(const Object& rhs) const override {
+  bool operator==(const Object& rhs) const noexcept override {
     const Generic* inherited = dynamic_cast<const Generic*>(&rhs);
     if (inherited != nullptr) {
-      return Object::operator ==(rhs) and id_ == inherited->id_;
+      return Object::operator==(rhs) and id_ == inherited->id_;
     }
     return false;
   }
@@ -307,9 +284,7 @@ class Byte : public Generic {
   /**
    * Default constructor
    */
-  Byte(const Object& object)
-      : Generic(object, NC_BYTE) {
-  }
+  Byte(const Object& object) noexcept : Generic(object, NC_BYTE) {}
 };
 
 /**
@@ -320,9 +295,7 @@ class Char : public Generic {
   /**
    * Default constructor
    */
-  Char(const Object& object)
-      : Generic(object, NC_CHAR) {
-  }
+  Char(const Object& object) noexcept : Generic(object, NC_CHAR) {}
 };
 
 /**
@@ -333,9 +306,7 @@ class Short : public Generic {
   /**
    * Default constructor
    */
-  Short(const Object& object)
-      : Generic(object, NC_SHORT) {
-  }
+  Short(const Object& object) noexcept : Generic(object, NC_SHORT) {}
 };
 
 /**
@@ -346,9 +317,7 @@ class Int : public Generic {
   /**
    * Default constructor
    */
-  Int(const Object& object)
-      : Generic(object, NC_INT) {
-  }
+  Int(const Object& object) noexcept : Generic(object, NC_INT) {}
 };
 
 /**
@@ -359,9 +328,7 @@ class Float : public Generic {
   /**
    * Default constructor
    */
-  Float(const Object& object)
-      : Generic(object, NC_FLOAT) {
-  }
+  Float(const Object& object) noexcept : Generic(object, NC_FLOAT) {}
 };
 
 /**
@@ -372,9 +339,7 @@ class Double : public Generic {
   /**
    * Default constructor
    */
-  Double(const Object& object)
-      : Generic(object, NC_DOUBLE) {
-  }
+  Double(const Object& object) noexcept : Generic(object, NC_DOUBLE) {}
 };
 
 /**
@@ -385,9 +350,7 @@ class Int64 : public Generic {
   /**
    * Default constructor
    */
-  Int64(const Object& object)
-      : Generic(object, NC_INT64) {
-  }
+  Int64(const Object& object) noexcept : Generic(object, NC_INT64) {}
 };
 
 /**
@@ -398,9 +361,7 @@ class UnsignedByte : public Generic {
   /**
    * Default constructor
    */
-  UnsignedByte(const Object& object)
-      : Generic(object, NC_UBYTE) {
-  }
+  UnsignedByte(const Object& object) noexcept : Generic(object, NC_UBYTE) {}
 };
 
 /**
@@ -411,9 +372,7 @@ class UnsignedShort : public Generic {
   /**
    * Default constructor
    */
-  UnsignedShort(const Object& object)
-      : Generic(object, NC_USHORT) {
-  }
+  UnsignedShort(const Object& object) noexcept : Generic(object, NC_USHORT) {}
 };
 
 /**
@@ -424,9 +383,7 @@ class UnsignedInt : public Generic {
   /**
    * Default constructor
    */
-  UnsignedInt(const Object& object)
-      : Generic(object, NC_UINT) {
-  }
+  UnsignedInt(const Object& object) noexcept : Generic(object, NC_UINT) {}
 };
 
 /**
@@ -437,9 +394,7 @@ class UnsignedInt64 : public Generic {
   /**
    * Default constructor
    */
-  UnsignedInt64(const Object& object)
-      : Generic(object, NC_UINT64) {
-  }
+  UnsignedInt64(const Object& object) noexcept : Generic(object, NC_UINT64) {}
 };
 
 /**
@@ -450,9 +405,7 @@ class String : public Generic {
   /**
    * Default constructor
    */
-  String(const Object& object)
-      : Generic(object, NC_STRING) {
-  }
+  String(const Object& object) noexcept : Generic(object, NC_STRING) {}
 };
 
 /**
@@ -466,10 +419,8 @@ class Enum : public Generic {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit Enum(const Object& object,
-                const nc_type type)
-      : Generic(object, type) {
-  }
+  explicit Enum(const Object& object, const nc_type type) noexcept
+      : Generic(object, type) {}
 
   /**
    * Create a new Enum type
@@ -479,8 +430,7 @@ class Enum : public Generic {
    *  kByte, kUbyte, kShort, kUShort, kInt, kUInt, kInt64, kUInt64.
    * @param name NetCDF names of new type.
    */
-  explicit Enum(const Object& object,
-                const std::string& name,
+  explicit Enum(const Object& object, const std::string& name,
                 const Primitive base_type)
       : Generic(object, Primitive::kNotAType) {
     Check(nc_def_enum(nc_id_, static_cast<int>(base_type), name.c_str(), &id_));
@@ -491,11 +441,10 @@ class Enum : public Generic {
    *
    * @param member Member properties
    */
-  template<typename T>
+  template <typename T>
   void Insert(const std::pair<std::string, T>& member) const {
-    Check(
-        nc_insert_enum(nc_id_, id_, member.first.c_str(),
-                       static_cast<const void*>(&member.second)));
+    Check(nc_insert_enum(nc_id_, id_, member.first.c_str(),
+                         static_cast<const void*>(&member.second)));
   }
 
   /**
@@ -534,14 +483,13 @@ class Enum : public Generic {
    * @param index Member index
    * @return the pair
    */
-  template<typename T>
+  template <typename T>
   std::pair<std::string, T> Value(const int index) const {
     char name[NC_MAX_NAME + 1];
     T value;
 
-    Check(
-        nc_inq_enum_member(nc_id_, id_, index, name,
-                           static_cast<void*>(&value)));
+    Check(nc_inq_enum_member(nc_id_, id_, index, name,
+                             static_cast<void*>(&value)));
 
     return std::pair<std::string, T>(name, value);
   }
@@ -552,7 +500,7 @@ class Enum : public Generic {
    *
    * @return a hash containing the constants and values of this enum type
    */
-  template<typename T>
+  template <typename T>
   std::map<std::string, T> Values() const {
     std::map<std::string, T> result;
 
@@ -575,10 +523,8 @@ class VLen : public Generic {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit VLen(const Object& object,
-                const nc_type type)
-      : Generic(object, type) {
-  }
+  explicit VLen(const Object& object, const nc_type type) noexcept
+      : Generic(object, type) {}
 
   /**
    * Create a new compound type
@@ -587,8 +533,7 @@ class VLen : public Generic {
    * @param name NetCDF names of the created type
    * @param type The type of the base type of the VLEN.
    */
-  explicit VLen(const Object& object,
-                const std::string& name,
+  explicit VLen(const Object& object, const std::string& name,
                 const Generic& type)
       : Generic(object, Primitive::kNotAType) {
     Check(nc_def_vlen(nc_id_, name.c_str(), type.id(), &id_));
@@ -626,10 +571,8 @@ class Opaque : public Generic {
    * @param object NetCDF Object
    * @param type type ID
    */
-  explicit Opaque(const Object& object,
-                  const nc_type type)
-      : Generic(object, type) {
-  }
+  explicit Opaque(const Object& object, const nc_type type) noexcept
+      : Generic(object, type) {}
 
   /**
    * Create a new Opaque type
@@ -638,8 +581,7 @@ class Opaque : public Generic {
    * @param name NetCDF names of the new type
    * @param size The size of each opaque object in bytes.
    */
-  explicit Opaque(const Object& object,
-                  const std::string& name,
+  explicit Opaque(const Object& object, const std::string& name,
                   const size_t size)
       : Generic(object, Primitive::kNotAType) {
     Check(nc_def_opaque(nc_id_, size, name.c_str(), &id_));
@@ -666,10 +608,8 @@ class Compound : public Generic {
    * @param object NetCDF Object
    * @param type Type ID
    */
-  explicit Compound(const Object& object,
-                    const nc_type type)
-      : Generic(object, type) {
-  }
+  explicit Compound(const Object& object, const nc_type type) noexcept
+      : Generic(object, type) {}
 
   /**
    * Create a new Compound type
@@ -678,8 +618,7 @@ class Compound : public Generic {
    * @param name NetCDF names of the created type
    * @param size The size, in bytes, of the compound type
    */
-  explicit Compound(const Object& object,
-                    const std::string& name,
+  explicit Compound(const Object& object, const std::string& name,
                     const size_t size)
       : Generic(object, Primitive::kNotAType) {
     Check(nc_def_compound(nc_id_, size, name.c_str(), &id_));
@@ -813,8 +752,7 @@ class Compound : public Generic {
     int ndims = GetNDims(index);
     std::vector<int> result;
 
-    if (ndims == 0)
-      return result;
+    if (ndims == 0) return result;
 
     result.resize(ndims);
     Check(nc_inq_compound_fielddim_sizes(nc_id_, id_, index, &result[0]));
@@ -828,8 +766,7 @@ class Compound : public Generic {
    * @param offset Offset in memory structure of the field to insert
    * @param type The type of the field to be inserted.
    */
-  void InsertMember(const std::string& name,
-                    const size_t offset,
+  void InsertMember(const std::string& name, const size_t offset,
                     const Generic& type) const {
     Check(nc_insert_compound(nc_id_, id_, name.c_str(), offset, type.id()));
   }
@@ -842,16 +779,14 @@ class Compound : public Generic {
    * @param type The type of the field to be inserted
    * @param shape The shape of the array
    */
-  void InsertMember(const std::string& name,
-                    const size_t offset,
-                    const Generic& type,
-                    const std::vector<int>& shape) const {
+  void InsertMember(const std::string& name, const size_t offset,
+                    const Generic& type, const std::vector<int>& shape) const {
     if (shape.empty())
       InsertMember(name, offset, type);
     else {
-      Check(
-          nc_insert_array_compound(nc_id_, id_, name.c_str(), offset, type.id(),
-                                   shape.size(), const_cast<int*>(&shape[0])));
+      Check(nc_insert_array_compound(nc_id_, id_, name.c_str(), offset,
+                                     type.id(), shape.size(),
+                                     const_cast<int*>(&shape[0])));
     }
   }
 

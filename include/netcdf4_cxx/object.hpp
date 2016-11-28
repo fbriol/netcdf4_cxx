@@ -31,25 +31,20 @@ class Object {
   /**
    * Default constructor
    */
-  Object()
-      : nc_id_(0) {
-  }
+  constexpr Object() noexcept : nc_id_(0) {}
 
   /**
    * Create a copy of an existing object giving the Object ID
    *
    * @param nc_id NetCDF ID
    */
-  explicit Object(const int nc_id)
-      : nc_id_(nc_id) {
-  }
+  explicit constexpr Object(const int nc_id) noexcept : nc_id_(nc_id) {}
 
  public:
   /**
    * Destructor
    */
-  virtual ~Object() {
-  }
+  virtual ~Object() noexcept {}
 
   /**
    * Get the Group
@@ -72,9 +67,7 @@ class Object {
    *
    * @return the NetCDF ID handled
    */
-  int nc_id() const {
-    return nc_id_;
-  }
+  int nc_id() const noexcept { return nc_id_; }
 
   /**
    * Test if two NetCDF Object are different
@@ -82,7 +75,7 @@ class Object {
    * @param rhs Other object to compare
    * @return true if the two instances are different
    */
-  virtual bool operator != (const Object& rhs) const {
+  virtual bool operator!=(const Object& rhs) const noexcept {
     return nc_id_ != rhs.nc_id_;
   }
 
@@ -92,7 +85,7 @@ class Object {
    * @param rhs Other object to compare
    * @return true if the two instances are equal
    */
-  virtual bool operator == (const Object& rhs) const {
+  virtual bool operator==(const Object& rhs) const noexcept {
     return nc_id_ == rhs.nc_id_;
   }
 };

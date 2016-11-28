@@ -21,9 +21,9 @@
 
 #include "tempfile.hpp"
 
-BOOST_AUTO_TEST_SUITE (test_file)
+BOOST_AUTO_TEST_SUITE(test_file)
 
-BOOST_AUTO_TEST_CASE( type_constructors ) {
+BOOST_AUTO_TEST_CASE(type_constructors) {
   netcdf::File file;
   BOOST_CHECK_THROW(file.AddDimension("a", 10), netcdf::Error);
 
@@ -31,26 +31,25 @@ BOOST_AUTO_TEST_CASE( type_constructors ) {
   file.Close();
 
   TempFile temp;
-  BOOST_CHECK_NO_THROW(
-      file.Open(temp.Path(), "w", false, false, false, netcdf::Format::kNetCdf4));
+  BOOST_CHECK_NO_THROW(file.Open(temp.Path(), "w", false, false, false,
+                                 netcdf::Format::kNetCdf4));
   BOOST_CHECK_EQUAL(file.GetFilePath(), temp.Path());
   BOOST_CHECK(file.GetFormat() == netcdf::Format::kNetCdf4);
   file.Close();
 
-  BOOST_CHECK_THROW(
-      file.Open(temp.Path(), "w", false, false, false, netcdf::Format::kNetCdf4),
-      netcdf::Error);
-  BOOST_CHECK_NO_THROW(
-      file.Open(temp.Path(), "w", true, false, false, netcdf::Format::kNetCdf4));
+  BOOST_CHECK_THROW(file.Open(temp.Path(), "w", false, false, false,
+                              netcdf::Format::kNetCdf4),
+                    netcdf::Error);
+  BOOST_CHECK_NO_THROW(file.Open(temp.Path(), "w", true, false, false,
+                                 netcdf::Format::kNetCdf4));
   file.Close();
 
-  BOOST_CHECK_NO_THROW(
-      file.Open(temp.Path(), "w", true, false, false,
-                netcdf::Format::kClassicNetCdf3));
+  BOOST_CHECK_NO_THROW(file.Open(temp.Path(), "w", true, false, false,
+                                 netcdf::Format::kClassicNetCdf3));
   netcdf::Dimension dim = file.AddDimension("x", 10);
-  std::vector<netcdf::Dimension> dims( { dim });
+  std::vector<netcdf::Dimension> dims({dim});
   netcdf::Variable var = file.AddVariable("var", netcdf::type::Int(file), dims);
-  std::vector<int> values( { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+  std::vector<int> values({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   BOOST_CHECK_THROW(var.Write(values), netcdf::Error);
   file.LeaveDefineMode();
   BOOST_CHECK_NO_THROW(var.Write(values));
@@ -61,7 +60,7 @@ BOOST_AUTO_TEST_CASE( type_constructors ) {
   auto src_dims = file.GetDimensions();
   auto dst_dims = copy.GetDimensions();
   BOOST_CHECK_EQUAL(src_dims.size(), dst_dims.size());
-  for(auto ix = 0; ix < src_dims.size(); ++ix) {
+  for (auto ix = 0; ix < src_dims.size(); ++ix) {
     BOOST_CHECK_EQUAL(src_dims[ix].GetLength(), dst_dims[ix].GetLength());
   }
 
@@ -73,8 +72,6 @@ BOOST_AUTO_TEST_CASE( type_constructors ) {
   var.Read(dst_var);
   BOOST_CHECK_EQUAL_COLLECTIONS(dst_var.begin(), dst_var.end(), values.begin(),
                                 values.end());
-
-
 }
 
 // BOOST_AUTO_TEST_CASE( test_copy ) {
@@ -84,4 +81,4 @@ BOOST_AUTO_TEST_CASE( type_constructors ) {
 //   src.Copy(tgt);
 // }
 
-BOOST_AUTO_TEST_SUITE_END( )
+BOOST_AUTO_TEST_SUITE_END()

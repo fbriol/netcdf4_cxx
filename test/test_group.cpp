@@ -14,8 +14,11 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <netcdf.h>
+#include <stddef.h>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
+#include <list>
 #include <netcdf4_cxx/abstract_dataset.hpp>
 #include <netcdf4_cxx/attribute.hpp>
 #include <netcdf4_cxx/dataset.hpp>
@@ -24,17 +27,14 @@
 #include <netcdf4_cxx/netcdf.hpp>
 #include <netcdf4_cxx/type.hpp>
 #include <netcdf4_cxx/variable.hpp>
-#include <netcdf.h>
-#include <stddef.h>
-#include <list>
 #include <string>
 #include <vector>
 
 #include "tempfile.hpp"
 
-BOOST_AUTO_TEST_SUITE (test_group)
+BOOST_AUTO_TEST_SUITE(test_group)
 
-BOOST_AUTO_TEST_CASE( test_accessors ) {
+BOOST_AUTO_TEST_CASE(test_accessors) {
   Object object;
   netcdf::type::UnsignedInt64 int64(object);
   netcdf::Group group(object);
@@ -77,9 +77,9 @@ BOOST_AUTO_TEST_CASE( test_accessors ) {
   BOOST_REQUIRE(groups.size() == 1);
   BOOST_CHECK_EQUAL(groups.back().GetShortName(), "a");
 
-  std::list<std::string> ref( { "/", "/a", "/a/b", "/a/b/c" });
+  std::list<std::string> ref({"/", "/a", "/a/b", "/a/b/c"});
   std::list<std::string> res;
-  for (auto &item : last) {
+  for (auto& item : last) {
     res.push_front(item.GetLongName());
   }
   BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.end(), res.begin(), res.end());
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE( test_accessors ) {
   BOOST_CHECK(last.FindDataType("Coordinate1D") == nullptr);
 }
 
-BOOST_AUTO_TEST_CASE( test_walk ) {
+BOOST_AUTO_TEST_CASE(test_walk) {
   Object object;
   netcdf::type::UnsignedInt64 int64(object);
   netcdf::Group root(object);
@@ -122,8 +122,11 @@ BOOST_AUTO_TEST_CASE( test_walk ) {
   a.AddDimension("ad", 10);
   b.AddDimension("bd", 10);
 
-  netcdf::Variable av = a.AddVariable("av", int64);
-  netcdf::Variable bv = b.AddVariable("bv", int64);
+  auto ad = a.GetDimensions();
+  auto bd = b.GetDimensions();
+
+  netcdf::Variable av = a.AddVariable("av", int64, ad);
+  netcdf::Variable bv = b.AddVariable("bv", int64, bd);
   netcdf::Variable cv = c.AddVariable("cv", int64);
   netcdf::Variable dv = d.AddVariable("dv", int64);
   netcdf::Variable ev = e.AddVariable("ev", int64);
@@ -188,4 +191,4 @@ BOOST_AUTO_TEST_CASE( test_walk ) {
   BOOST_CHECK(d.FindGroup("c") == nullptr);
 }
 
-BOOST_AUTO_TEST_SUITE_END( )
+BOOST_AUTO_TEST_SUITE_END()

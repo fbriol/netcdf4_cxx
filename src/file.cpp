@@ -14,7 +14,6 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include <netcdf4_cxx/file.hpp>
 
 namespace netcdf {
@@ -31,38 +30,34 @@ void File::Open(const std::string& filename, const std::string& mode,
 
     flags = clobber ? NC_CLOBBER : NC_NOCLOBBER;
 
-    if (mode[mode.size() - 1] == 's')
-      flags |= NC_SHARE;
+    if (mode[mode.size() - 1] == 's') flags |= NC_SHARE;
 
     if (diskless) {
       flags |= NC_DISKLESS;
 
-      if (persist)
-        flags |= NC_WRITE;
+      if (persist) flags |= NC_WRITE;
     }
   } else if (mode == "r") {
     flags = NC_NOWRITE;
 
-    if (diskless)
-      flags |= NC_DISKLESS;
+    if (diskless) flags |= NC_DISKLESS;
   } else if (mode == "r+" || mode == "a") {
     flags = NC_WRITE;
 
-    if (diskless)
-      flags |= NC_DISKLESS;
+    if (diskless) flags |= NC_DISKLESS;
   } else if (mode == "as" || mode == "r+s") {
     flags = NC_SHARE;
 
-    if (diskless)
-      flags |= NC_DISKLESS;
+    if (diskless) flags |= NC_DISKLESS;
   } else {
-    throw std::invalid_argument("mode must be 'w', 'r', 'a', 'r+', 'ws', "
-        "'as' or 'r+s' got '" + mode + "'");
+    throw std::invalid_argument(
+        "mode must be 'w', 'r', 'a', 'r+', 'ws', "
+        "'as' or 'r+s' got '" +
+        mode + "'");
   }
 
-  Check(mode[0] == 'w'
-      ? nc_create(filename.c_str(), flags, &ident)
-      : nc_open(filename.c_str(), flags, &ident));
+  Check(mode[0] == 'w' ? nc_create(filename.c_str(), flags, &ident)
+                       : nc_open(filename.c_str(), flags, &ident));
 
   nc_id_ = ident;
 }

@@ -16,15 +16,15 @@
 
 #pragma once
 
+#include <netcdf.h>
+#include <stddef.h>
+#include <functional>
+#include <iostream>
 #include <netcdf4_cxx/dataset.hpp>
 #include <netcdf4_cxx/dimension.hpp>
 #include <netcdf4_cxx/hyperslab.hpp>
 #include <netcdf4_cxx/netcdf.hpp>
 #include <netcdf4_cxx/type.hpp>
-#include <netcdf.h>
-#include <stddef.h>
-#include <functional>
-#include <iostream>
 #include <numeric>
 #include <stdexcept>
 #include <string>
@@ -44,9 +44,7 @@ class Variable : public DataSet {
    * @param object NetCDF Object
    * @param var_id variable ID
    */
-  Variable(const Object& object, const int var_id)
-      : DataSet(object, var_id) {
-  }
+  Variable(const Object& object, const int var_id) : DataSet(object, var_id) {}
 
   /**
    * Get the data type of the Variable.
@@ -83,7 +81,7 @@ class Variable : public DataSet {
    * @return array whose length is the rank of this variable and whose
    * values equal the length of that Dimension.
    */
-  std::vector<size_t> GetShape() const  {
+  std::vector<size_t> GetShape() const {
     std::vector<size_t> result;
     for (auto& item : GetDimensions()) {
       result.push_back(item.GetLength());
@@ -141,8 +139,7 @@ class Variable : public DataSet {
    */
   bool IsUnlimited() const {
     for (auto& item : GetDimensions()) {
-      if (item.IsUnlimited())
-        return true;
+      if (item.IsUnlimited()) return true;
     }
     return false;
   }
@@ -197,51 +194,52 @@ class Variable : public DataSet {
    * @param values data read
    * @return a reference on the data read
    */
-  template<class T>
+  template <class T>
   std::vector<T>& Read(const Hyperslab& hyperslab,
                        std::vector<T>& values) const {
     if (sizeof(T) != GetDataType().GetSize())
-      throw std::invalid_argument("the size of the NetCDF type does not "
-                                  "match the size of the given C++ type");
+      throw std::invalid_argument(
+          "the size of the NetCDF type does not "
+          "match the size of the given C++ type");
 
     if (hyperslab > GetShape())
-      throw std::invalid_argument("Hyperslab defined overlap the "
-                                  "variable definition");
+      throw std::invalid_argument(
+          "Hyperslab defined overlap the "
+          "variable definition");
 
     values = std::vector<T>(hyperslab.GetSize());
 
     if (hyperslab.OnlyAdjacent())
-      Check(
-          nc_get_vara(nc_id_, id_, &hyperslab.start()[0],
-                      &hyperslab.GetSizeList()[0], &values[0]));
+      Check(nc_get_vara(nc_id_, id_, &hyperslab.start()[0],
+                        &hyperslab.GetSizeList()[0], &values[0]));
     else
-      Check(
-          nc_get_vars(nc_id_, id_, &hyperslab.start()[0],
-                      &hyperslab.GetSizeList()[0], &hyperslab.step()[0],
-                      &values[0]));
+      Check(nc_get_vars(nc_id_, id_, &hyperslab.start()[0],
+                        &hyperslab.GetSizeList()[0], &hyperslab.step()[0],
+                        &values[0]));
     return values;
   }
 
   std::vector<signed char>& Read(const Hyperslab& hyperslab,
-      std::vector<signed char>& values) const;
+                                 std::vector<signed char>& values) const;
   std::vector<unsigned char>& Read(const Hyperslab& hyperslab,
-      std::vector<unsigned char>& values) const;
+                                   std::vector<unsigned char>& values) const;
   std::vector<short>& Read(const Hyperslab& hyperslab,
-      std::vector<short>& values) const;
+                           std::vector<short>& values) const;
   std::vector<unsigned short>& Read(const Hyperslab& hyperslab,
-      std::vector<unsigned short>& values) const;
+                                    std::vector<unsigned short>& values) const;
   std::vector<int>& Read(const Hyperslab& hyperslab,
-      std::vector<int>& values) const;
+                         std::vector<int>& values) const;
   std::vector<unsigned int>& Read(const Hyperslab& hyperslab,
-      std::vector<unsigned int>& values) const;
+                                  std::vector<unsigned int>& values) const;
   std::vector<long long>& Read(const Hyperslab& hyperslab,
-      std::vector<long long>& values) const;
-  std::vector<unsigned long long>& Read(const Hyperslab& hyperslab,
+                               std::vector<long long>& values) const;
+  std::vector<unsigned long long>& Read(
+      const Hyperslab& hyperslab,
       std::vector<unsigned long long>& values) const;
   std::vector<float>& Read(const Hyperslab& hyperslab,
-      std::vector<float>& values) const;
+                           std::vector<float>& values) const;
   std::vector<double>& Read(const Hyperslab& hyperslab,
-      std::vector<double>& values) const;
+                            std::vector<double>& values) const;
 
   /**
    * Read all the data for this Variable
@@ -260,33 +258,33 @@ class Variable : public DataSet {
    * @param hyperslab Hyperslabs to be write
    * @param values values to write
    */
-  template<typename T>
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<T>& values) const {
+  template <typename T>
+  void Write(const Hyperslab& hyperslab, const std::vector<T>& values) const {
     if (sizeof(T) != GetDataType().GetSize())
-      throw std::invalid_argument("the size of the NetCDF type does not "
-                                  "match the size of the given C++ type");
+      throw std::invalid_argument(
+          "the size of the NetCDF type does not "
+          "match the size of the given C++ type");
 
     if (hyperslab.IsEmpty()) {
       // Avoid the problems dealing with the writing a new unlimited variables
       if (IsUnlimited())
-        throw std::runtime_error("You must specify a hyperslab for "
-                                 "unlimited variables");
+        throw std::runtime_error(
+            "You must specify a hyperslab for "
+            "unlimited variables");
 
       Check(nc_put_var(nc_id_, id_, &values[0]));
     } else {
       if (values.size() != hyperslab.GetSize())
-        throw std::invalid_argument("data size does not match hyperslab "
-                                    "definition");
+        throw std::invalid_argument(
+            "data size does not match hyperslab "
+            "definition");
       if (hyperslab.OnlyAdjacent())
-        Check(
-            nc_put_vara(nc_id_, id_, &hyperslab.start()[0],
-                        &hyperslab.GetSizeList()[0], &values[0]));
+        Check(nc_put_vara(nc_id_, id_, &hyperslab.start()[0],
+                          &hyperslab.GetSizeList()[0], &values[0]));
       else
-        Check(
-            nc_put_vars(nc_id_, id_, &hyperslab.start()[0],
-                        &hyperslab.GetSizeList()[0], &hyperslab.step()[0],
-                        &values[0]));
+        Check(nc_put_vars(nc_id_, id_, &hyperslab.start()[0],
+                          &hyperslab.GetSizeList()[0], &hyperslab.step()[0],
+                          &values[0]));
     }
   }
 
@@ -298,8 +296,7 @@ class Variable : public DataSet {
              const std::vector<short>& values) const;
   void Write(const Hyperslab& hyperslab,
              const std::vector<unsigned short>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<int>& values) const;
+  void Write(const Hyperslab& hyperslab, const std::vector<int>& values) const;
   void Write(const Hyperslab& hyperslab,
              const std::vector<unsigned int>& values) const;
   void Write(const Hyperslab& hyperslab,

@@ -14,16 +14,14 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <netcdf.h>
 #include <netcdf4_cxx/group.hpp>
 #include <netcdf4_cxx/object.hpp>
-#include <netcdf.h>
 #include <stdexcept>
 
 namespace netcdf {
 
-Group Object::GetGroup() const {
-  return Group(*this);
-}
+Group Object::GetGroup() const { return Group(*this); }
 
 Group Object::GetParentGroup() const {
   int parent;
@@ -36,5 +34,4 @@ Group Object::GetParentGroup() const {
 
   return Group(Object(parent));
 }
-
 }

@@ -16,17 +16,17 @@
 
 #pragma once
 
-#include <netcdf4_cxx/dimension.hpp>
-#include <netcdf4_cxx/netcdf.hpp>
-#include <netcdf4_cxx/object.hpp>
-#include <netcdf4_cxx/type.hpp>
-#include <netcdf4_cxx/variable.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <iostream>
 #include <iterator>
 #include <list>
 #include <memory>
+#include <netcdf4_cxx/dimension.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/object.hpp>
+#include <netcdf4_cxx/type.hpp>
+#include <netcdf4_cxx/variable.hpp>
 #include <string>
 #include <vector>
 
@@ -35,7 +35,7 @@ namespace netcdf {
 /**
  * Iterate over Group
  */
-template<typename T>
+template <typename T>
 class GroupIteratorType : public std::iterator<std::forward_iterator_tag, T> {
  private:
   T* group_;
@@ -57,18 +57,14 @@ class GroupIteratorType : public std::iterator<std::forward_iterator_tag, T> {
   /**
    * Destructive
    */
-  ~GroupIteratorType() {
-    delete group_;
-  }
+  ~GroupIteratorType() { delete group_; }
 
   /**
    * Test GroupIteratorType if the iteration is over
    *
    * @return true if the iteration is over
    */
-  operator bool() const {
-    return group_ ? group_->IsRoot() : false;
-  }
+  operator bool() const { return group_ ? group_->IsRoot() : false; }
 
   /**
    * Test whether two iterators are equal
@@ -110,27 +106,21 @@ class GroupIteratorType : public std::iterator<std::forward_iterator_tag, T> {
    *
    * @return a reference to the handled Group by this instance
    */
-  T& operator*() {
-    return *group_;
-  }
+  T& operator*() noexcept { return *group_; }
 
   /**
    * Dereferences pointer to the handled instance
    *
    * @return a reference to the handled Group by this instance
    */
-  const T& operator*() const {
-    return *group_;
-  }
+  const T& operator*() const noexcept { return *group_; }
 
   /**
    * Pointer to member instance
    *
    * @return a reference to the handled Group by this instance
    */
-  T* operator->() {
-    return group_;
-  }
+  T* operator->() noexcept { return group_; }
 };
 
 /**
@@ -146,17 +136,17 @@ class Group : public DataSet {
    *
    * @param group_id Group ID
    */
-  explicit Group(const int group_id) {
-    nc_id_ = group_id;
-  }
+  explicit constexpr Group(const int group_id) noexcept { nc_id_ = group_id; }
+
+  // Dump this instance into a human-readable text representation
+  static std::string DumpCommonDataFormLanguage(const Group& group,
+                                                const int level = 0);
 
  protected:
   /**
    * Create an empty Group
    */
-  Group()
-      : DataSet() {
-  }
+  constexpr Group() noexcept : DataSet() {}
 
  public:
   /**
@@ -164,9 +154,7 @@ class Group : public DataSet {
    *
    * @param object NetCDF Object
    */
-  explicit Group(const Object& object)
-      : Group(object.nc_id()) {
-  }
+  explicit Group(const Object& object) noexcept : Group(object.nc_id()) {}
 
   /**
    * Create a nested group relative to the given Object
@@ -175,8 +163,7 @@ class Group : public DataSet {
    * @param name Group name
    */
   Group(const Object& object, const std::string& name) {
-    Check(
-        nc_def_grp(object.nc_id(), const_cast<char*>(name.c_str()), &nc_id_));
+    Check(nc_def_grp(object.nc_id(), const_cast<char*>(name.c_str()), &nc_id_));
   }
 
   /**
@@ -235,7 +222,8 @@ class Group : public DataSet {
    * @return the variable created
    */
   Variable AddVariable(const std::string& name, const type::Generic& type,
-     const std::vector<Dimension>& dimensions = std::vector<Dimension>()) const;
+                       const std::vector<Dimension>& dimensions =
+                           std::vector<Dimension>()) const;
 
   /**
    * Add a nested group
@@ -264,7 +252,7 @@ class Group : public DataSet {
    */
   std::shared_ptr<Dimension> FindDimensionLocal(const std::string& name) const {
     int dim_id;
-    if(nc_inq_dimid(nc_id_, name.c_str(), &dim_id) == NC_NOERR)
+    if (nc_inq_dimid(nc_id_, name.c_str(), &dim_id) == NC_NOERR)
       return std::make_shared<Dimension>(*this, dim_id);
     return std::shared_ptr<Dimension>(nullptr);
   }
@@ -301,7 +289,7 @@ class Group : public DataSet {
    * @return the Group, or NULL if not found
    */
   std::shared_ptr<Group> FindGroup(const std::string& name) const {
-    for (auto& item: GetGroups()) {
+    for (auto& item : GetGroups()) {
       if (item.GetShortName() == name) {
         return std::make_shared<Group>(item);
       }
@@ -318,17 +306,19 @@ class Group : public DataSet {
   std::shared_ptr<Variable> FindVariable(const std::string& name) const {
     int var_id;
     if (nc_inq_varid(nc_id_, name.c_str(), &var_id) == NC_NOERR)
-        return std::make_shared<Variable>(*this, var_id);
+      return std::make_shared<Variable>(*this, var_id);
     return std::shared_ptr<Variable>(nullptr);
   }
 
   /**
-   * Find the Variable with the specified (short) name in this group or a parent group.
+   * Find the Variable with the specified (short) name in this group or a parent
+   * group.
    *
    * @param name Short name of Variable within this group.
    * @return the Variable, or null if not found
    */
-  std::shared_ptr<Variable> FindVariableOrInParent(const std::string& name) const;
+  std::shared_ptr<Variable> FindVariableOrInParent(
+      const std::string& name) const;
 
   /**
    * Walk the group tree down-top
@@ -344,7 +334,7 @@ class Group : public DataSet {
    */
   Group GetRootGroup() const {
     Group result = *this;
-    while(not result.IsRoot()) {
+    while (not result.IsRoot()) {
       result = result.GetParentGroup();
     }
     return result;
@@ -375,8 +365,8 @@ class Group : public DataSet {
    * @param target Target group
    * @param variables List of variables to be ignored in the source group
    */
-  void Copy(const Group& target,
-            const std::list<std::string>& variables = std::list<std::string> { }) const;
+  void Copy(const Group& target, const std::list<std::string>& variables =
+                                     std::list<std::string>{}) const;
 
   /**
    * Get the user data type defined in this Group only
@@ -425,18 +415,14 @@ class Group : public DataSet {
    *
    * @return an iterator
    */
-  GroupIterator begin() {
-    return GroupIterator(this);
-  }
+  GroupIterator begin() { return GroupIterator(this); }
 
   /**
    * Return an iterator to the end
    *
    * @return an iterator
    */
-  GroupIterator end() {
-    return GroupIterator(nullptr);
-  }
+  GroupIterator end() { return GroupIterator(nullptr); }
 
   /**
    * Return a constant iterator to the beginning
@@ -452,9 +438,7 @@ class Group : public DataSet {
    *
    * @return a constant iterator
    */
-  ConstGroupIterator end() const {
-    return ConstGroupIterator(nullptr);
-  }
+  ConstGroupIterator end() const { return ConstGroupIterator(nullptr); }
 };
 
 }  // namespace netcdf

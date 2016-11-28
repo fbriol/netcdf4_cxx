@@ -25,16 +25,13 @@ namespace netcdf {
  * Base class of errors thrown by this library
  */
 class Error : public std::runtime_error {
-
- /**
-  * Constructor
-  *
-  * @param status NetCDF status code
-  */
+  /**
+   * Constructor
+   *
+   * @param status NetCDF status code
+   */
  public:
-  Error(const int status)
-      : std::runtime_error(nc_strerror(status)) {
-  }
+  Error(const int status) : std::runtime_error(nc_strerror(status)) {}
 };
 
 /**
@@ -44,8 +41,7 @@ class Error : public std::runtime_error {
  * @param status Code to check
  */
 inline void Check(const int status) {
-  if (status != NC_NOERR)
-    throw Error(status);
+  if (status != NC_NOERR) throw Error(status);
 }
 
 }  // namespace netcdf

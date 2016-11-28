@@ -16,12 +16,12 @@
 
 #pragma once
 
-#include <netcdf4_cxx/attribute.hpp>
-#include <netcdf4_cxx/netcdf.hpp>
 #include <netcdf.h>
 #include <iostream>
 #include <list>
 #include <memory>
+#include <netcdf4_cxx/attribute.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
 #include <string>
 
 namespace netcdf {
@@ -36,18 +36,14 @@ class DataSet : public AbstractDataSet {
   /**
    * Default constructor
    */
-  DataSet()
-      : AbstractDataSet() {
-  }
+  constexpr DataSet() noexcept : AbstractDataSet() {}
 
   /**
    * Create a new data set from an existing NetCDF Object
    *
    * @param object NetCDF Object
    */
-  explicit DataSet(const Object& object)
-      : AbstractDataSet(object) {
-  }
+  explicit DataSet(const Object& object) noexcept : AbstractDataSet(object) {}
 
   /**
    * Create a new data set from an existing NetCDF Object and NetCDF
@@ -56,9 +52,8 @@ class DataSet : public AbstractDataSet {
    * @param object NetCDF Object
    * @param var_id Variable ID
    */
-  DataSet(const Object& object, const int var_id)
-      : AbstractDataSet(object, var_id) {
-  }
+  DataSet(const Object& object, const int var_id) noexcept
+      : AbstractDataSet(object, var_id) {}
 
   /**
    * Get the set of attributes contained in this container.

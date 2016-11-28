@@ -28,9 +28,8 @@ Variable Group::AddVariable(const std::string& name, const type::Generic& type,
   for (auto& item : dimensions) {
     dimids.push_back(item.id());
   }
-  Check(
-      nc_def_var(nc_id_, name.c_str(), type.id(), dimids.size(),
-                 dimids.size() ? &dimids[0]: nullptr, &var_id));
+  Check(nc_def_var(nc_id_, name.c_str(), type.id(), dimids.size(),
+                   dimids.size() ? &dimids[0] : nullptr, &var_id));
   return Variable(*this, var_id);
 }
 
@@ -40,11 +39,10 @@ std::vector<Dimension> Group::GetDimensions() const {
   int num_dimensions;
 
   Check(nc_inq_dimids(nc_id_, &num_dimensions, &dimension_id[0], 0));
-  if (num_dimensions == 0)
-    return result;
+  if (num_dimensions == 0) return result;
 
   dimension_id.resize(num_dimensions);
-  for (int &dim_id : dimension_id) {
+  for (int& dim_id : dimension_id) {
     result.push_back(Dimension(*this, dim_id));
   }
 
@@ -56,8 +54,7 @@ std::shared_ptr<Dimension> Group::FindDimension(const std::string& name) const {
   Group item = *this;
   while (true) {
     result = item.FindDimensionLocal(name);
-    if (result != nullptr or item.IsRoot())
-      break;
+    if (result != nullptr or item.IsRoot()) break;
     item = item.GetParentGroup();
   }
   return result;
@@ -68,8 +65,7 @@ std::list<Group> Group::GetGroups() const {
   int num_groups;
 
   Check(nc_inq_grps(nc_id_, &num_groups, nullptr));
-  if (num_groups == 0)
-    return result;
+  if (num_groups == 0) return result;
 
   std::vector<int> group_ident(num_groups);
 
@@ -83,19 +79,15 @@ std::list<Group> Group::GetGroups() const {
 }
 
 std::shared_ptr<Group> Group::GetCommonParent(const Group& other) const {
-  for(auto& my: *this) {
-    if (my.IsRoot() or my == *this)
-      continue;
-    for(auto& its: other) {
-      if (its.IsRoot() or its == other)
-        continue;
-      if (its.nc_id() == my.nc_id())
-        return std::make_shared<Group>(my);
+  for (auto& my : *this) {
+    if (my.IsRoot() or my == *this) continue;
+    for (auto& its : other) {
+      if (its.IsRoot() or its == other) continue;
+      if (its.nc_id() == my.nc_id()) return std::make_shared<Group>(my);
     }
   }
   return std::shared_ptr<Group>(nullptr);
 }
-
 
 std::string Group::GetLongName() const {
   size_t length;
@@ -112,8 +104,7 @@ std::list<Variable> Group::GetVariables() const {
   int num_variables;
 
   Check(nc_inq_nvars(nc_id_, &num_variables));
-  if (num_variables == 0)
-    return result;
+  if (num_variables == 0) return result;
 
   std::vector<int> variable_ident(num_variables);
 
@@ -138,28 +129,27 @@ bool Group::IsRoot() const {
 
 void Group::Copy(const Group& target,
                  const std::list<std::string>& variables) const {
- for (auto& item: GetDataTypes()) {
-   item.Copy(target);
- }
+  for (auto& item : GetDataTypes()) {
+    item.Copy(target);
+  }
 
- for (auto& item : GetDimensions()) {
-   item.Copy(target);
- }
+  for (auto& item : GetDimensions()) {
+    item.Copy(target);
+  }
 
- for (auto& item : GetAttributes()) {
-   item.Copy(target);
- }
+  for (auto& item : GetAttributes()) {
+    item.Copy(target);
+  }
 
- for (auto& item : GetVariables()) {
-   if (std::find(variables.begin(), variables.end(), item.GetLongName())
-       == variables.end())
-     item.Copy(target);
- }
+  for (auto& item : GetVariables()) {
+    if (std::find(variables.begin(), variables.end(), item.GetLongName()) ==
+        variables.end())
+      item.Copy(target);
+  }
 
- for (auto& item : GetGroups()) {
-   Group new_group(target, item.GetShortName());
-   item.Copy(new_group, variables);
- }
+  for (auto& item : GetGroups()) {
+    item.Copy(Group(target, item.GetShortName()), variables);
+  }
 }
 
 std::list<type::Generic> Group::GetDataTypesLocal() const {
@@ -185,13 +175,13 @@ std::list<type::Generic> Group::GetDataTypes() const {
   return result;
 }
 
-std::shared_ptr<Variable> Group::FindVariableOrInParent(const std::string& name) const {
+std::shared_ptr<Variable> Group::FindVariableOrInParent(
+    const std::string& name) const {
   std::shared_ptr<Variable> result(nullptr);
   Group item = *this;
   while (true) {
     result = item.FindVariable(name);
-    if (result != nullptr or item.IsRoot())
-      break;
+    if (result != nullptr or item.IsRoot()) break;
     item = item.GetParentGroup();
   }
   return result;
@@ -199,7 +189,7 @@ std::shared_ptr<Variable> Group::FindVariableOrInParent(const std::string& name)
 
 std::list<Group> Group::Walk() const {
   std::list<Group> result, groups = GetGroups();
-  for (auto& item: groups) {
+  for (auto& item : groups) {
     std::list<Group> childs = item.Walk();
     result.insert(result.end(), childs.begin(), childs.end());
   }
@@ -207,7 +197,8 @@ std::list<Group> Group::Walk() const {
   return result;
 }
 
-std::shared_ptr<type::Generic> Group::FindDataType(const std::string& name) const {
+std::shared_ptr<type::Generic> Group::FindDataType(
+    const std::string& name) const {
   std::shared_ptr<type::Generic> result(nullptr);
   Group item = *this;
   while (true) {
@@ -217,8 +208,7 @@ std::shared_ptr<type::Generic> Group::FindDataType(const std::string& name) cons
         break;
       }
     }
-    if (result != nullptr or item.IsRoot())
-      break;
+    if (result != nullptr or item.IsRoot()) break;
     item = item.GetParentGroup();
   }
   return result;

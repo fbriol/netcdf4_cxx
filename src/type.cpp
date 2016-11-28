@@ -14,7 +14,6 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include <netcdf4_cxx/type.hpp>
 #include <stdexcept>
 
@@ -48,9 +47,8 @@ type::Primitive type::Generic::GetPrimitive() const {
       return Primitive::kString;
     default:
       int type;
-      Check(
-          nc_inq_user_type(nc_id_, id_, nullptr, nullptr, nullptr, nullptr,
-                           &type));
+      Check(nc_inq_user_type(nc_id_, id_, nullptr, nullptr, nullptr, nullptr,
+                             &type));
       return static_cast<type::Primitive>(type);
   }
 }
@@ -97,29 +95,25 @@ std::string type::Generic::GetPrimitiveName() const {
 
 type::Enum type::Generic::GetEnum() const {
   if (GetPrimitive() != Primitive::kEnum)
-    std::logic_error(
-        GetName() + " is not an enumeration type");
+    std::logic_error(GetName() + " is not an enumeration type");
   return Enum(*this, id_);
 }
 
 type::VLen type::Generic::GetVLen() const {
   if (GetPrimitive() != Primitive::kVLen)
-    std::logic_error(
-        GetName() + " is not a variable length type");
+    std::logic_error(GetName() + " is not a variable length type");
   return VLen(*this, id_);
 }
 
 type::Opaque type::Generic::GetOpaque() const {
   if (GetPrimitive() != Primitive::kOpaque)
-    std::logic_error(
-        GetName() + " is not an opaque type");
+    std::logic_error(GetName() + " is not an opaque type");
   return Opaque(*this, id_);
 }
 
 type::Compound type::Generic::GetCompound() const {
   if (GetPrimitive() != Primitive::kCompound)
-    std::logic_error(
-        GetName() + " is not a compound type");
+    std::logic_error(GetName() + " is not a compound type");
   return Compound(*this, id_);
 }
 
@@ -155,29 +149,25 @@ void type::Enum::Copy(const Object& other) const {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<signed char>(Value<signed char>(ix));
       }
-    }
-      break;
+    } break;
     case Primitive::kUShort:
     case Primitive::kShort: {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<short>(Value<short>(ix));
       }
-    }
-      break;
+    } break;
     case Primitive::kInt:
     case Primitive::kUInt: {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<int>(Value<int>(ix));
       }
-    }
-      break;
+    } break;
     case Primitive::kInt64:
     case Primitive::kUInt64: {
       for (size_t ix = 0; ix < num_member; ++ix) {
         target.Insert<long long>(Value<long long>(ix));
       }
-    }
-      break;
+    } break;
     case Primitive::kChar:
     case Primitive::kFloat:
     case Primitive::kDouble:
@@ -200,6 +190,5 @@ void type::Compound::Copy(const Object& target) const {
                       GetMemberClass(ix), GetDims(ix));
   }
 }
-
 
 }  // namespace netcdf

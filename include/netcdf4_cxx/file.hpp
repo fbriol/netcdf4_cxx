@@ -16,15 +16,15 @@
 
 #pragma once
 
-#include <netcdf4_cxx/attribute.hpp>
-#include <netcdf4_cxx/dataset.hpp>
-#include <netcdf4_cxx/group.hpp>
-#include <netcdf4_cxx/netcdf.hpp>
 #include <netcdf.h>
 #include <stddef.h>
 #include <cstdio>
 #include <iostream>
 #include <list>
+#include <netcdf4_cxx/attribute.hpp>
+#include <netcdf4_cxx/dataset.hpp>
+#include <netcdf4_cxx/group.hpp>
+#include <netcdf4_cxx/netcdf.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -59,9 +59,7 @@ class File : public Group {
   /**
    * Constructor
    */
-  File()
-      : Group() {
-  }
+  constexpr File() noexcept : Group() {}
 
   /**
    * Constructor
@@ -84,12 +82,9 @@ class File : public Group {
    *  (default False).
    * @param format underlying file format
    */
-  File(const std::string& filename,
-       const std::string& mode = "r",
-       bool clobber = true,
-       const bool diskless = false,
-       const bool persist = false,
-       const Format format = Format::kNetCdf4)
+  File(const std::string& filename, const std::string& mode = "r",
+       bool clobber = true, const bool diskless = false,
+       const bool persist = false, const Format format = Format::kNetCdf4)
       : Group() {
     Open(filename, mode, clobber, diskless, persist, format);
   }
@@ -106,26 +101,19 @@ class File : public Group {
    *
    * @sa #File
    */
-  void Open(const std::string& filename,
-            const std::string& mode = "r",
-            bool clobber = true,
-            const bool diskless = false,
-            const bool persist = false,
-            const Format format = Format::kNetCdf4);
+  void Open(const std::string& filename, const std::string& mode = "r",
+            bool clobber = true, const bool diskless = false,
+            const bool persist = false, const Format format = Format::kNetCdf4);
 
   /**
    * Destructor
    */
-  virtual ~File() {
-    nc_close(nc_id_);
-  }
+  virtual ~File() noexcept { nc_close(nc_id_); }
 
   /**
    * Close the file
    */
-  inline void Close() {
-    Check(nc_close(nc_id_));
-  }
+  inline void Close() { Check(nc_close(nc_id_)); }
 
   /**
    * Set the redefine mode
@@ -137,9 +125,7 @@ class File : public Group {
   /**
    * Synchronize the Dataset to Disk
    */
-  inline void Synchronize() const {
-    Check(nc_sync(nc_id_));
-  }
+  inline void Synchronize() const { Check(nc_sync(nc_id_)); }
 
   /**
    * Change the default chunk cache settings in the HDF5 library for all
@@ -163,9 +149,7 @@ class File : public Group {
    *
    * @return the NetCDF library version
    */
-  static std::string GetVersion() {
-    return nc_inq_libvers();
-  }
+  static std::string GetVersion() noexcept { return nc_inq_libvers(); }
 
   /**
    * Get the file system path used to open/create the NetCDF file;
@@ -195,9 +179,7 @@ class File : public Group {
    * For netCDF-4 files (i.e. files created with File::kNetCdf4 in the mode
    * in their call to Open()), it is not necessary to call this method.
    */
-  void EnterDefineMode() const {
-    Check(nc_redef(nc_id_));
-  }
+  void EnterDefineMode() const { Check(nc_redef(nc_id_)); }
 
   /**
    * Leave define mode
@@ -205,9 +187,7 @@ class File : public Group {
    * For netCDF-4 files (i.e. files created with File::kNetCdf4 in the mode
    * in their call to Open()), it is not necessary to call this method.
    */
-  void LeaveDefineMode() const {
-    Check(nc_enddef(nc_id_));
-  }
+  void LeaveDefineMode() const { Check(nc_enddef(nc_id_)); }
 
   /**
    * Get the human-readable title, if it exists.
@@ -216,8 +196,7 @@ class File : public Group {
    */
   std::string GetTitle() const {
     auto result = FindAttribute("title");
-    if (result != nullptr)
-      return result->ReadText();
+    if (result != nullptr) return result->ReadText();
     return std::string();
   }
 };

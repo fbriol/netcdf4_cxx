@@ -34,20 +34,15 @@ class AbstractDataSet : public Object {
   /**
    * Default constructor
    */
-  AbstractDataSet()
-      : Object(),
-        id_(NC_GLOBAL) {
-  }
+  constexpr AbstractDataSet() noexcept : Object(), id_(NC_GLOBAL) {}
 
   /**
    * Create a global data set
    *
    * @param object NetCDF Object
    */
-  explicit AbstractDataSet(const Object& object)
-      : Object(object),
-        id_(NC_GLOBAL) {
-  }
+  explicit AbstractDataSet(const Object& object) noexcept : Object(object),
+                                                            id_(NC_GLOBAL) {}
 
   /**
    * Create a specific data set
@@ -55,24 +50,19 @@ class AbstractDataSet : public Object {
    * @param object NetCDF Object
    * @param id Data set ID
    */
-  AbstractDataSet(const Object& object, const int id)
-      : Object(object),
-        id_(id) {
-  }
+  AbstractDataSet(const Object& object, const int id) noexcept : Object(object),
+                                                                 id_(id) {}
 
   /**
    * Destructive
    */
-  virtual ~AbstractDataSet() {
-  }
+  virtual ~AbstractDataSet() noexcept {}
 
   /**
    * Get the data set ID
    * @return the data set ID
    */
-  int id() const {
-    return id_;
-  }
+  int id() const noexcept { return id_; }
 
   /**
    * Test if two NetCDF data set are different
@@ -80,10 +70,11 @@ class AbstractDataSet : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are different
    */
-  bool operator !=(const Object& rhs) const override {
-    const AbstractDataSet* inherited = dynamic_cast<const AbstractDataSet*>(&rhs);
+  bool operator!=(const Object& rhs) const noexcept override {
+    const AbstractDataSet* inherited =
+        dynamic_cast<const AbstractDataSet*>(&rhs);
     if (inherited != nullptr) {
-      return Object::operator !=(rhs) or id_ != inherited->id_;
+      return Object::operator!=(rhs) or id_ != inherited->id_;
     }
     return true;
   }
@@ -94,14 +85,14 @@ class AbstractDataSet : public Object {
    * @param rhs Other data set to compare
    * @return true if the two instances are equal
    */
-  bool operator ==(const Object& rhs) const override {
-    const AbstractDataSet* inherited = dynamic_cast<const AbstractDataSet*>(&rhs);
+  bool operator==(const Object& rhs) const noexcept override {
+    const AbstractDataSet* inherited =
+        dynamic_cast<const AbstractDataSet*>(&rhs);
     if (inherited != nullptr) {
-      return Object::operator ==(rhs) and id_ == inherited->id_;
+      return Object::operator==(rhs) and id_ == inherited->id_;
     }
     return false;
   }
 };
 
 }  // namespace netcdf
-

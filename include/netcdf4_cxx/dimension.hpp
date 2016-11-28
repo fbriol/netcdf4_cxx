@@ -17,9 +17,9 @@
 #pragma once
 
 #include <netcdf.h>
+#include <stddef.h>
 #include <netcdf4_cxx/abstract_dataset.hpp>
 #include <netcdf4_cxx/netcdf.hpp>
-#include <stddef.h>
 #include <string>
 
 namespace netcdf {
@@ -42,9 +42,8 @@ class Dimension : public AbstractDataSet {
    * @param object NetCDF object
    * @param dim_id Dimension ID
    */
-  Dimension(const Object& object, const int dim_id)
-      : AbstractDataSet(object, dim_id) {
-  }
+  Dimension(const Object& object, const int dim_id) noexcept
+      : AbstractDataSet(object, dim_id) {}
 
   /**
    * Copy the dimension from the netCDF object to another

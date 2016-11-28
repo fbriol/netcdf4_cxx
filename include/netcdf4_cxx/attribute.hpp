@@ -16,13 +16,13 @@
 
 #pragma once
 
+#include <netcdf.h>
+#include <stddef.h>
+#include <iostream>
 #include <netcdf4_cxx/abstract_dataset.hpp>
 #include <netcdf4_cxx/netcdf.hpp>
 #include <netcdf4_cxx/object.hpp>
 #include <netcdf4_cxx/type.hpp>
-#include <netcdf.h>
-#include <stddef.h>
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -43,9 +43,7 @@ class Attribute : public AbstractDataSet {
    * @param name Attribute name
    */
   explicit Attribute(const Object& object, const std::string& name)
-      : AbstractDataSet(object),
-        name_(name) {
-  }
+      : AbstractDataSet(object), name_(name) {}
 
   /**
    * Create an Attribute to an existing Variable
@@ -54,19 +52,14 @@ class Attribute : public AbstractDataSet {
    * @param name Attribute name
    */
   explicit Attribute(const AbstractDataSet& dataset, const std::string& name)
-      : AbstractDataSet(dataset),
-        name_(name) {
-  }
+      : AbstractDataSet(dataset), name_(name) {}
 
   /**
    * Copy constructor
    *
    * @param rhs right hand side
    */
-  Attribute(const Attribute& rhs)
-  	  : AbstractDataSet(rhs),
-  	    name_(rhs.name_) {
-  }
+  Attribute(const Attribute& rhs) : AbstractDataSet(rhs), name_(rhs.name_) {}
 
   /**
    * Move constructor
@@ -74,9 +67,7 @@ class Attribute : public AbstractDataSet {
    * @param rhs right hand side
    */
   Attribute(Attribute&& rhs)
-  	  : AbstractDataSet(rhs),
-  	    name_(std::move(rhs.name_)) {
-  }
+      : AbstractDataSet(rhs), name_(std::move(rhs.name_)) {}
 
   /**
    * Move assignment operator
@@ -85,7 +76,7 @@ class Attribute : public AbstractDataSet {
    */
   Attribute& operator=(Attribute&& rhs) {
     if (this != &rhs) {
-      AbstractDataSet::operator =(std::move(rhs));
+      AbstractDataSet::operator=(std::move(rhs));
       name_ = std::move(rhs.name_);
     }
     return *this;
@@ -97,84 +88,74 @@ class Attribute : public AbstractDataSet {
    * @param data_type Attribute type (in memory)
    * @param data Data to be written
    */
-  template<typename T>
+  template <typename T>
   void Write(const type::Generic& data_type, const std::vector<T>& data) const {
     if (sizeof(T) != data_type.GetSize())
-        throw std::invalid_argument("the size of the NetCDF type does not "
-                                    "match the size of the given C++ type");
-    Check(
-        nc_put_att(nc_id_, id_, name_.c_str(), data_type.id(), data.size(),
-                   &data[0]));
+      throw std::invalid_argument(
+          "the size of the NetCDF type does not "
+          "match the size of the given C++ type");
+    Check(nc_put_att(nc_id_, id_, name_.c_str(), data_type.id(), data.size(),
+                     &data[0]));
   }
 
   void Write(const type::Generic& data_type,
              const std::vector<signed char>& data) const {
-    Check(
-        nc_put_att_schar(nc_id_, id_, name_.c_str(), data_type.id(),
-                         data.size(), &data[0]));
+    Check(nc_put_att_schar(nc_id_, id_, name_.c_str(), data_type.id(),
+                           data.size(), &data[0]));
   }
 
   void Write(const type::Generic& data_type,
              const std::vector<unsigned char>& data) const {
-    Check(
-        nc_put_att_uchar(nc_id_, id_, name_.c_str(), data_type.id(),
-                         data.size(), &data[0]));
+    Check(nc_put_att_uchar(nc_id_, id_, name_.c_str(), data_type.id(),
+                           data.size(), &data[0]));
   }
 
   void Write(const type::Generic& data_type,
              const std::vector<short>& data) const {
-    Check(
-        nc_put_att_short(nc_id_, id_, name_.c_str(), data_type.id(),
-                         data.size(), &data[0]));
+    Check(nc_put_att_short(nc_id_, id_, name_.c_str(), data_type.id(),
+                           data.size(), &data[0]));
   }
 
   void Write(const type::Generic& data_type,
              const std::vector<unsigned short>& data) const {
-    Check(
-        nc_put_att_ushort(nc_id_, id_, name_.c_str(), data_type.id(),
-                          data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<int>& data) const {
-    Check(
-        nc_put_att_int(nc_id_, id_, name_.c_str(), data_type.id(), data.size(),
-                       &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<unsigned int>& data) const {
-    Check(
-        nc_put_att_uint(nc_id_, id_, name_.c_str(), data_type.id(), data.size(),
-                        &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<long long>& data) const {
-    Check(
-        nc_put_att_longlong(nc_id_, id_, name_.c_str(), data_type.id(),
+    Check(nc_put_att_ushort(nc_id_, id_, name_.c_str(), data_type.id(),
                             data.size(), &data[0]));
   }
 
   void Write(const type::Generic& data_type,
-             const std::vector<unsigned long long>& data) const {
-    Check(
-        nc_put_att_ulonglong(nc_id_, id_, name_.c_str(), data_type.id(),
-                             data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<float>& data) const {
-    Check(
-        nc_put_att_float(nc_id_, id_, name_.c_str(), data_type.id(),
+             const std::vector<int>& data) const {
+    Check(nc_put_att_int(nc_id_, id_, name_.c_str(), data_type.id(),
                          data.size(), &data[0]));
   }
 
   void Write(const type::Generic& data_type,
-             const std::vector<double>& data) const {
-    Check(
-        nc_put_att_double(nc_id_, id_, name_.c_str(), data_type.id(),
+             const std::vector<unsigned int>& data) const {
+    Check(nc_put_att_uint(nc_id_, id_, name_.c_str(), data_type.id(),
                           data.size(), &data[0]));
+  }
+
+  void Write(const type::Generic& data_type,
+             const std::vector<long long>& data) const {
+    Check(nc_put_att_longlong(nc_id_, id_, name_.c_str(), data_type.id(),
+                              data.size(), &data[0]));
+  }
+
+  void Write(const type::Generic& data_type,
+             const std::vector<unsigned long long>& data) const {
+    Check(nc_put_att_ulonglong(nc_id_, id_, name_.c_str(), data_type.id(),
+                               data.size(), &data[0]));
+  }
+
+  void Write(const type::Generic& data_type,
+             const std::vector<float>& data) const {
+    Check(nc_put_att_float(nc_id_, id_, name_.c_str(), data_type.id(),
+                           data.size(), &data[0]));
+  }
+
+  void Write(const type::Generic& data_type,
+             const std::vector<double>& data) const {
+    Check(nc_put_att_double(nc_id_, id_, name_.c_str(), data_type.id(),
+                            data.size(), &data[0]));
   }
 
   /**
@@ -208,7 +189,7 @@ class Attribute : public AbstractDataSet {
    * @param data String attribute
    */
   void WriteString(const std::string& data) const {
-    WriteString(std::vector<std::string> { data });
+    WriteString(std::vector<std::string>{data});
   }
 
   /**
@@ -258,9 +239,7 @@ class Attribute : public AbstractDataSet {
    *
    * @return the attribute name
    */
-  const std::string& name() const {
-    return name_;
-  }
+  const std::string& name() const noexcept { return name_; }
 
   /**
    * Copy the attribute from the netCDF object to an other
@@ -268,8 +247,7 @@ class Attribute : public AbstractDataSet {
    * @param other The NetCDF object target of the copy
    */
   void Copy(const AbstractDataSet& other) const {
-    Check(
-        nc_copy_att(nc_id_, id_, name_.c_str(), other.nc_id(), other.id()));
+    Check(nc_copy_att(nc_id_, id_, name_.c_str(), other.nc_id(), other.id()));
   }
 
   /**
@@ -288,11 +266,12 @@ class Attribute : public AbstractDataSet {
    * @param values Array of values read
    * @return a reference on values read
    */
-  template<typename T>
-  std::vector<T> & Read(std::vector<T> &values) const {
+  template <typename T>
+  std::vector<T>& Read(std::vector<T>& values) const {
     if (sizeof(T) != GetDataType().GetSize())
-      throw std::invalid_argument("the size of the NetCDF type does not "
-                                  "match the size of the given C++ type");
+      throw std::invalid_argument(
+          "the size of the NetCDF type does not "
+          "match the size of the given C++ type");
     values = std::vector<T>(GetLength());
     Check(nc_get_att(nc_id_, id_, name_.c_str(), &values[0]));
     return values;
@@ -340,7 +319,8 @@ class Attribute : public AbstractDataSet {
     return values;
   }
 
-  std::vector<unsigned long long>& Read(std::vector<unsigned long long>& values) const {
+  std::vector<unsigned long long>& Read(
+      std::vector<unsigned long long>& values) const {
     values = std::vector<unsigned long long>(GetLength());
     Check(nc_get_att_ulonglong(nc_id_, id_, name_.c_str(), &values[0]));
     return values;

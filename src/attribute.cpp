@@ -14,17 +14,14 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <netcdf4_cxx/attribute.hpp>
 #include <stdlib.h>
+#include <netcdf4_cxx/attribute.hpp>
 
 namespace netcdf {
 
 class CStringArray : public std::vector<char*> {
  public:
-  explicit CStringArray(const size_t length)
-      : std::vector<char *>(length, 0) {
-  }
+  explicit CStringArray(const size_t length) : std::vector<char*>(length, 0) {}
 
   ~CStringArray() {
     for (auto& item : *this) {

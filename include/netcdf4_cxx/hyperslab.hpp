@@ -42,22 +42,16 @@ class Range {
   /**
    * Create an empty Range.
    */
-  Range()
-      : start_(0),
-        end_(0),
-        step_(1) {
-  }
+  constexpr Range() noexcept : start_(0), end_(0), step_(1) {}
 
   /**
    * Create a Range starting at zero, with unit step.
    *
    * @param length number of elements in the interval
    */
-  Range(const size_t length)
-      : start_(0),
-        end_(length),
-        step_(1) {
-  }
+  constexpr Range(const size_t length) noexcept : start_(0),
+                                                  end_(length),
+                                                  step_(1) {}
 
   /**
    * Create Range, with unit step.
@@ -65,11 +59,10 @@ class Range {
    * @param start first value of the interval
    * @param end end of interval
    */
-  Range(const size_t start, const size_t end)
+  constexpr Range(const size_t start, const size_t end) noexcept
       : start_(start),
         end_(end),
-        step_(1) {
-  }
+        step_(1) {}
 
   /**
    * Create a Range with a specified step.
@@ -78,7 +71,7 @@ class Range {
    * @param end end of interval
    * @param step spacing between values
    */
-  Range(const size_t start, const size_t end, const ptrdiff_t step) {
+  Range(const size_t start, const size_t end, const ptrdiff_t step) noexcept {
     // Converts an invalid definition in an empty range
     if (start > end and step > 0) {
       *this = Range();
@@ -94,9 +87,7 @@ class Range {
    *
    * @return true if the range is defined
    */
-  bool IsEmpty() const {
-    return end_ == start_;
-  }
+  constexpr bool IsEmpty() const noexcept { return end_ == start_; }
 
   /**
    * Compute total number of elements represented by the Range
@@ -127,8 +118,7 @@ class Range {
    * @return the index for this item
    */
   size_t Index(const size_t item) const {
-    if (not Contains(item))
-      throw std::out_of_range("item not in range");
+    if (not Contains(item)) throw std::out_of_range("item not in range");
     return static_cast<ptrdiff_t>(item - start_) / step_;
   }
 
@@ -137,26 +127,22 @@ class Range {
    *
    * @return true step() == 1
    */
-  bool OnlyAdjacent() const {
-    return step_ == 1;
-  }
+  constexpr bool OnlyAdjacent() const noexcept { return step_ == 1; }
 
   /**
    * Get the first value of the Range
    *
    * @return the first of the interval
    */
-  size_t First() const {
-    return start_;
-  }
+  constexpr size_t First() const noexcept { return start_; }
 
   /**
    * Get the last value of the Range
    *
    * @return the last of the interval
    */
-  size_t Last() const {
-    return IsEmpty() ? 0: end_ + (end_ > start_ ? -1 : 1);
+  constexpr size_t Last() const noexcept {
+    return IsEmpty() ? 0 : end_ + (end_ > start_ ? -1 : 1);
   }
 
   /**
@@ -168,9 +154,8 @@ class Range {
   bool Contains(const size_t item) const {
     if (item < std::min(First(), Last()) or item > std::max(First(), Last()))
       return false;
-    return step_ == 1
-        ? true
-        : static_cast<ptrdiff_t>(item - start_) % step_ == 0;
+    return step_ == 1 ? true
+                      : static_cast<ptrdiff_t>(item - start_) % step_ == 0;
   }
 
   /**
@@ -178,27 +163,21 @@ class Range {
    *
    * @return start
    */
-  size_t start() const {
-    return start_;
-  }
+  constexpr size_t start() const noexcept { return start_; }
 
   /**
    * Get the end of Range
    *
    * @return end
    */
-  size_t end() const {
-    return end_;
-  }
+  constexpr size_t end() const noexcept { return end_; }
 
   /**
    * Get the step of Range
    *
    * @return step
    */
-  size_t step() const {
-    return step_;
-  }
+  constexpr size_t step() const noexcept { return step_; }
 
   /**
    * Get nth element without error check
@@ -206,7 +185,7 @@ class Range {
    * @param index index of the element
    * @return the nth element of a range.
    */
-  size_t operator [](const size_t index) const {
+  constexpr size_t operator[](const size_t index) const noexcept {
     return start_ + index * step_;
   }
 
@@ -229,20 +208,16 @@ class Range {
  */
 class Hyperslab {
  private:
-  std::vector<size_t> start_;     //!< array of start for each range
-  std::vector<size_t> end_;       //!< array of end for each range
-  std::vector<ptrdiff_t> step_;   //!< spacing between values for each range
+  std::vector<size_t> start_;    //!< array of start for each range
+  std::vector<size_t> end_;      //!< array of end for each range
+  std::vector<ptrdiff_t> step_;  //!< spacing between values for each range
 
  public:
   /**
    * Create an empty Hyperslab: no data selection will be done
    *
    */
-  Hyperslab()
-      : start_(),
-        end_(),
-        step_() {
-  }
+  Hyperslab() noexcept : start_(), end_(), step_() {}
 
   /**
    * Create an Hyperslab from a shape array, assumes 0 origin.
@@ -250,10 +225,7 @@ class Hyperslab {
    * @param shape array of lengths for each range
    */
   explicit Hyperslab(const std::vector<size_t>& shape)
-      : start_(shape.size(), 0),
-        end_(shape),
-        step_() {
-  }
+      : start_(shape.size(), 0), end_(shape), step_() {}
 
   /**
    * Create an Hyperslab from a start and end interval arrays.
@@ -262,9 +234,7 @@ class Hyperslab {
    * @param end array of end of the interval for each range
    */
   Hyperslab(const std::vector<size_t>& start, const std::vector<size_t>& end)
-      : start_(start),
-        end_(end),
-        step_() {
+      : start_(start), end_(end), step_() {
     if (start_.size() != end_.size()) {
       throw std::invalid_argument("start and end are not aligned");
     }
@@ -279,18 +249,15 @@ class Hyperslab {
    */
   Hyperslab(const std::vector<size_t>& start, const std::vector<size_t>& end,
             const std::vector<ptrdiff_t>& step)
-      : start_(start),
-        end_(end),
-        step_(step) {
+      : start_(start), end_(end), step_(step) {
     if (start_.size() != end_.size()) {
       throw std::invalid_argument("start and end are not aligned");
     }
     if (start_.size() != end_.size()) {
       throw std::invalid_argument("start and step are not aligned");
     }
-    for (auto &item : step) {
-      if (item < 1)
-        throw std::invalid_argument("stride must be > 0");
+    for (auto& item : step) {
+      if (item < 1) throw std::invalid_argument("stride must be > 0");
     }
   }
 
@@ -300,9 +267,7 @@ class Hyperslab {
    * @param range array of range
    */
   explicit Hyperslab(const std::vector<Range>& range)
-    : start_(),
-      end_(),
-      step_() {
+      : start_(), end_(), step_() {
     for (auto& item : range) {
       start_.push_back(item.start());
       end_.push_back(item.end());
@@ -316,10 +281,7 @@ class Hyperslab {
    * @param rhs right value
    */
   Hyperslab(const Hyperslab& rhs)
-      : start_(rhs.start_),
-        end_(rhs.end_),
-        step_(rhs.step_) {
-  }
+      : start_(rhs.start_), end_(rhs.end_), step_(rhs.step_) {}
 
   /**
    * Move constructor
@@ -329,8 +291,7 @@ class Hyperslab {
   Hyperslab(Hyperslab&& rhs)
       : start_(std::move(rhs.start_)),
         end_(std::move(rhs.end_)),
-        step_(std::move(rhs.step_)) {
-  }
+        step_(std::move(rhs.step_)) {}
 
   /**
    * Move assignment operator
@@ -338,9 +299,11 @@ class Hyperslab {
    * @param rhs right value
    */
   Hyperslab& operator=(Hyperslab&& rhs) {
-    start_ = std::move(rhs.start_);
-    end_ = std::move(rhs.end_);
-    step_ = std::move(rhs.step_);
+    if (this != &rhs) {
+      start_ = std::move(rhs.start_);
+      end_ = std::move(rhs.end_);
+      step_ = std::move(rhs.step_);
+    }
     return *this;
   }
 
@@ -349,9 +312,7 @@ class Hyperslab {
    *
    * @return rank
    */
-  size_t GetRank() const {
-    return start_.size();
-  }
+  size_t GetRank() const noexcept { return start_.size(); }
 
   /**
    * Compute total number of elements represented by the a given Range
@@ -360,9 +321,7 @@ class Hyperslab {
    * @param ix index into the list of ranges
    * @return ith size of the range
    */
-  size_t GetSize(const size_t ix) const {
-    return GetRange(ix).GetSize();
-  }
+  size_t GetSize(const size_t ix) const { return GetRange(ix).GetSize(); }
 
   /**
    * Compute total number of elements represented by the Hyperslab
@@ -370,8 +329,7 @@ class Hyperslab {
    * @return total number of elements
    */
   size_t GetSize() const {
-    if (IsEmpty())
-      return 0;
+    if (IsEmpty()) return 0;
 
     size_t result = 1;
     for (size_t ix = 0; ix < GetRank(); ++ix) {
@@ -387,7 +345,7 @@ class Hyperslab {
    */
   const std::vector<size_t> GetSizeList() const {
     std::vector<size_t> result;
-    for(size_t ix = 0; ix < GetRank(); ++ix) {
+    for (size_t ix = 0; ix < GetRank(); ++ix) {
       result.push_back(GetSize(ix));
     }
     return result;
@@ -398,9 +356,7 @@ class Hyperslab {
    *
    * @return true if the Hyperslab is defined
    */
-  bool IsEmpty() const {
-    return start_.empty();
-  }
+  bool IsEmpty() const noexcept { return start_.empty(); }
 
   /**
    * Check if the defined Hyperslab select only adjacent values of the
@@ -409,8 +365,7 @@ class Hyperslab {
    * @return true if the Hyperslab select adjacent values
    */
   bool OnlyAdjacent() const {
-    if (step_.empty())
-      return true;
+    if (step_.empty()) return true;
     return std::accumulate(step_.begin(), step_.end(), 1,
                            std::multiplies<ptrdiff_t>()) == 1;
   }
@@ -423,8 +378,8 @@ class Hyperslab {
    */
   Range GetRange(const int index) const {
     return step_.empty()
-        ? Range(start_.at(index), end_.at(index))
-        : Range(start_.at(index), end_.at(index), step_.at(index));
+               ? Range(start_.at(index), end_.at(index))
+               : Range(start_.at(index), end_.at(index), step_.at(index));
   }
 
   /**
@@ -447,14 +402,13 @@ class Hyperslab {
    * @return true if the set Hyperslab selects a portion of the target
    *    variable (ie is correct)
    */
-  bool operator <=(const std::vector<size_t>& shape) const {
+  bool operator<=(const std::vector<size_t>& shape) const {
     if (shape.size() != GetRank()) {
       return false;
     }
 
     for (size_t ix = 0; ix < GetRank(); ++ix) {
-      if (GetSize(ix) > shape[ix])
-        return false;
+      if (GetSize(ix) > shape[ix]) return false;
     }
     return true;
   }
@@ -466,7 +420,7 @@ class Hyperslab {
    * @return false if the set Hyperslab selects a larger part of the target
    *    variable (ie is incorrect)
    */
-  bool operator >(const std::vector<size_t>& shape) const {
+  bool operator>(const std::vector<size_t>& shape) const {
     return !(*this <= shape);
   }
 
@@ -475,27 +429,21 @@ class Hyperslab {
    *
    * @return start
    */
-  const std::vector<size_t>& start() const {
-    return start_;
-  }
+  const std::vector<size_t>& start() const noexcept { return start_; }
 
   /**
    * Get the end of the interval for each range
    *
    * @return end
    */
-  const std::vector<size_t>& end() const {
-    return end_;
-  }
+  const std::vector<size_t>& end() const noexcept { return end_; }
 
   /**
    * Get the space between values of the interval for each range
    *
    * @return step
    */
-  const std::vector<ptrdiff_t>& step() const {
-    return step_;
-  }
+  const std::vector<ptrdiff_t>& step() const noexcept { return step_; }
 };
 
 }  // namespace netcdf

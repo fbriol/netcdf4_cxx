@@ -14,17 +14,17 @@
    along with NetCDF4_CXX.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <netcdf.h>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 #include <netcdf4_cxx/dimension.hpp>
 #include <netcdf4_cxx/object.hpp>
-#include <netcdf.h>
 
 #include "tempfile.hpp"
 
-BOOST_AUTO_TEST_SUITE (test_dimension)
+BOOST_AUTO_TEST_SUITE(test_dimension)
 
-BOOST_AUTO_TEST_CASE( test_accessor ) {
+BOOST_AUTO_TEST_CASE(test_accessor) {
   Object object;
   int dimid;
   nc_def_dim(object.nc_id(), "__x__", 100, &dimid);
@@ -46,5 +46,4 @@ BOOST_AUTO_TEST_CASE( test_accessor ) {
   BOOST_CHECK_EQUAL(x.GetShortName(), "x");
 }
 
-
-BOOST_AUTO_TEST_SUITE_END( )
+BOOST_AUTO_TEST_SUITE_END()
