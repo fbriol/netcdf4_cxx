@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(test_unlimited) {
     }                                                                          \
                                                                                \
     netcdf_var.Write(netcdf::Hyperslab(shape), cpp_var_ref);                   \
-    netcdf_var.Read(cpp_var_res);                                              \
+    cpp_var_res = netcdf_var.Read<TYPE>();                                     \
                                                                                \
     BOOST_REQUIRE(cpp_var_ref.size() == cpp_var_res.size());                   \
     for (size_t i = 0; i < cpp_var_ref.size(); ++i) {                          \
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(test_compound) {
 
   // Write/read all the data
   netcdf_var.Write(netcdf::Hyperslab(shape), cpp_var_ref);
-  netcdf_var.Read(cpp_var_res);
+  cpp_var_res = netcdf_var.Read<Coordinate>();
 
   BOOST_REQUIRE(cpp_var_ref.size() == cpp_var_res.size());
   for (size_t i = 0; i < shape[0]; ++i) {
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE(test_compound) {
                            std::vector<size_t>({48, 112}),
                            std::vector<ptrdiff_t>({4, 7}));
   cpp_var_res.clear();
-  netcdf_var.Read(select, cpp_var_res);
+  cpp_var_res = netcdf_var.Read<Coordinate>(select);
 
   BOOST_REQUIRE(cpp_var_res.size() == select.GetSize());
   netcdf::Range rx = select.GetRange(0);

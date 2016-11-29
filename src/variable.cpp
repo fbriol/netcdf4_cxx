@@ -59,14 +59,14 @@ bool Variable::IsCoordinate() const {
   return false;
 }
 
-#define VARIABLE_READ(type, sufix)                                         \
-  std::vector<type>& Variable::Read(const Hyperslab& hyperslab,            \
-                                    std::vector<type>& values) const {     \
+#define __NETCDF4CXX_READ_VAR(type, sufix)                                 \
+  template <>                                                              \
+  std::vector<type> Variable::Read(const Hyperslab& hyperslab) const {     \
     if (hyperslab > GetShape())                                            \
       throw std::invalid_argument(                                         \
           "Hyperslab defined overlap the "                                 \
           "variable definition");                                          \
-    values = std::vector<type>(hyperslab.GetSize());                       \
+    std::vector<type> values(hyperslab.GetSize());                         \
     if (hyperslab.OnlyAdjacent())                                          \
       Check(nc_get_vara_##sufix(nc_id_, id_, &hyperslab.start()[0],        \
                                 &hyperslab.GetSizeList()[0], &values[0])); \
@@ -77,18 +77,18 @@ bool Variable::IsCoordinate() const {
     return values;                                                         \
   }
 
-VARIABLE_READ(signed char, schar)
-VARIABLE_READ(unsigned char, uchar)
-VARIABLE_READ(short, short)
-VARIABLE_READ(unsigned short, ushort)
-VARIABLE_READ(int, int)
-VARIABLE_READ(unsigned int, uint)
-VARIABLE_READ(long long, longlong)
-VARIABLE_READ(unsigned long long, ulonglong)
-VARIABLE_READ(float, float)
-VARIABLE_READ(double, double)
+__NETCDF4CXX_READ_VAR(signed char, schar)
+__NETCDF4CXX_READ_VAR(unsigned char, uchar)
+__NETCDF4CXX_READ_VAR(short, short)
+__NETCDF4CXX_READ_VAR(unsigned short, ushort)
+__NETCDF4CXX_READ_VAR(int, int)
+__NETCDF4CXX_READ_VAR(unsigned int, uint)
+__NETCDF4CXX_READ_VAR(long long, longlong)
+__NETCDF4CXX_READ_VAR(unsigned long long, ulonglong)
+__NETCDF4CXX_READ_VAR(float, float)
+__NETCDF4CXX_READ_VAR(double, double)
 
-#define VARIABLE_WRITE(type, sufix)                                          \
+#define __NETCDF4CXX_WRITE_VAR(type, sufix)                                  \
   void Variable::Write(const Hyperslab& hyperslab,                           \
                        const std::vector<type>& values) const {              \
     if (hyperslab.IsEmpty()) {                                               \
@@ -112,16 +112,16 @@ VARIABLE_READ(double, double)
     }                                                                        \
   }
 
-VARIABLE_WRITE(signed char, schar)
-VARIABLE_WRITE(unsigned char, uchar)
-VARIABLE_WRITE(short, short)
-VARIABLE_WRITE(unsigned short, ushort)
-VARIABLE_WRITE(int, int)
-VARIABLE_WRITE(unsigned int, uint)
-VARIABLE_WRITE(long long, longlong)
-VARIABLE_WRITE(unsigned long long, ulonglong)
-VARIABLE_WRITE(float, float)
-VARIABLE_WRITE(double, double)
+__NETCDF4CXX_WRITE_VAR(signed char, schar)
+__NETCDF4CXX_WRITE_VAR(unsigned char, uchar)
+__NETCDF4CXX_WRITE_VAR(short, short)
+__NETCDF4CXX_WRITE_VAR(unsigned short, ushort)
+__NETCDF4CXX_WRITE_VAR(int, int)
+__NETCDF4CXX_WRITE_VAR(unsigned int, uint)
+__NETCDF4CXX_WRITE_VAR(long long, longlong)
+__NETCDF4CXX_WRITE_VAR(unsigned long long, ulonglong)
+__NETCDF4CXX_WRITE_VAR(float, float)
+__NETCDF4CXX_WRITE_VAR(double, double)
 
 void Variable::Copy(const Group& other) const {
   std::list<Attribute> attributes = GetAttributes();

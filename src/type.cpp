@@ -95,25 +95,25 @@ std::string type::Generic::GetPrimitiveName() const {
 
 type::Enum type::Generic::GetEnum() const {
   if (GetPrimitive() != Primitive::kEnum)
-    std::logic_error(GetName() + " is not an enumeration type");
+    throw std::logic_error(GetName() + " is not an enumeration type");
   return Enum(*this, id_);
 }
 
 type::VLen type::Generic::GetVLen() const {
   if (GetPrimitive() != Primitive::kVLen)
-    std::logic_error(GetName() + " is not a variable length type");
+    throw std::logic_error(GetName() + " is not a variable length type");
   return VLen(*this, id_);
 }
 
 type::Opaque type::Generic::GetOpaque() const {
   if (GetPrimitive() != Primitive::kOpaque)
-    std::logic_error(GetName() + " is not an opaque type");
+    throw std::logic_error(GetName() + " is not an opaque type");
   return Opaque(*this, id_);
 }
 
 type::Compound type::Generic::GetCompound() const {
   if (GetPrimitive() != Primitive::kCompound)
-    std::logic_error(GetName() + " is not a compound type");
+    throw std::logic_error(GetName() + " is not a compound type");
   return Compound(*this, id_);
 }
 

@@ -68,8 +68,7 @@ BOOST_AUTO_TEST_CASE(type_constructors) {
   auto dst_vars = copy.GetVariables();
   BOOST_CHECK_EQUAL(src_vars.size(), dst_vars.size());
   var = dst_vars.front();
-  std::vector<int> dst_var;
-  var.Read(dst_var);
+  std::vector<int> dst_var = var.Read<int>();
   BOOST_CHECK_EQUAL_COLLECTIONS(dst_var.begin(), dst_var.end(), values.begin(),
                                 values.end());
 }

@@ -195,8 +195,7 @@ class Variable : public DataSet {
    * @return a reference on the data read
    */
   template <class T>
-  std::vector<T>& Read(const Hyperslab& hyperslab,
-                       std::vector<T>& values) const {
+  std::vector<T> Read(const Hyperslab& hyperslab) const {
     if (sizeof(T) != GetDataType().GetSize())
       throw std::invalid_argument(
           "the size of the NetCDF type does not "
@@ -207,7 +206,7 @@ class Variable : public DataSet {
           "Hyperslab defined overlap the "
           "variable definition");
 
-    values = std::vector<T>(hyperslab.GetSize());
+    std::vector<T> values(hyperslab.GetSize());
 
     if (hyperslab.OnlyAdjacent())
       Check(nc_get_vara(nc_id_, id_, &hyperslab.start()[0],
@@ -219,28 +218,6 @@ class Variable : public DataSet {
     return values;
   }
 
-  std::vector<signed char>& Read(const Hyperslab& hyperslab,
-                                 std::vector<signed char>& values) const;
-  std::vector<unsigned char>& Read(const Hyperslab& hyperslab,
-                                   std::vector<unsigned char>& values) const;
-  std::vector<short>& Read(const Hyperslab& hyperslab,
-                           std::vector<short>& values) const;
-  std::vector<unsigned short>& Read(const Hyperslab& hyperslab,
-                                    std::vector<unsigned short>& values) const;
-  std::vector<int>& Read(const Hyperslab& hyperslab,
-                         std::vector<int>& values) const;
-  std::vector<unsigned int>& Read(const Hyperslab& hyperslab,
-                                  std::vector<unsigned int>& values) const;
-  std::vector<long long>& Read(const Hyperslab& hyperslab,
-                               std::vector<long long>& values) const;
-  std::vector<unsigned long long>& Read(
-      const Hyperslab& hyperslab,
-      std::vector<unsigned long long>& values) const;
-  std::vector<float>& Read(const Hyperslab& hyperslab,
-                           std::vector<float>& values) const;
-  std::vector<double>& Read(const Hyperslab& hyperslab,
-                            std::vector<double>& values) const;
-
   /**
    * Read all the data for this Variable
    *
@@ -248,8 +225,8 @@ class Variable : public DataSet {
    * @return a reference on the data read
    */
   template <class T>
-  std::vector<T>& Read(std::vector<T>& values) const {
-    return Read(Hyperslab(GetShape()), values);
+  std::vector<T> Read() const {
+    return Read<T>(Hyperslab(GetShape()));
   }
 
   /**
@@ -288,25 +265,19 @@ class Variable : public DataSet {
     }
   }
 
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<signed char>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<unsigned char>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<short>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<unsigned short>& values) const;
-  void Write(const Hyperslab& hyperslab, const std::vector<int>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<unsigned int>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<long long>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<unsigned long long>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<float>& values) const;
-  void Write(const Hyperslab& hyperslab,
-             const std::vector<double>& values) const;
+#define _NETCDF4CXX_WRITE_VAR(type) \
+  void Write(const Hyperslab& hyperslab, const std::vector<type>& values) const;
+
+  _NETCDF4CXX_WRITE_VAR(signed char)
+  _NETCDF4CXX_WRITE_VAR(unsigned char)
+  _NETCDF4CXX_WRITE_VAR(short)
+  _NETCDF4CXX_WRITE_VAR(unsigned short)
+  _NETCDF4CXX_WRITE_VAR(int)
+  _NETCDF4CXX_WRITE_VAR(unsigned int)
+  _NETCDF4CXX_WRITE_VAR(long long)
+  _NETCDF4CXX_WRITE_VAR(unsigned long long)
+  _NETCDF4CXX_WRITE_VAR(float)
+  _NETCDF4CXX_WRITE_VAR(double)
 
   /**
    * Write all data for this variable
@@ -318,5 +289,20 @@ class Variable : public DataSet {
     Write(Hyperslab(), values);
   }
 };
+
+#define _NETCDF4CXX_READ_VAR(type) \
+  template <>                      \
+  std::vector<type> Variable::Read(const Hyperslab& hyperslab) const;
+
+_NETCDF4CXX_READ_VAR(signed char)
+_NETCDF4CXX_READ_VAR(unsigned char)
+_NETCDF4CXX_READ_VAR(short)
+_NETCDF4CXX_READ_VAR(unsigned short)
+_NETCDF4CXX_READ_VAR(int)
+_NETCDF4CXX_READ_VAR(unsigned int)
+_NETCDF4CXX_READ_VAR(long long)
+_NETCDF4CXX_READ_VAR(unsigned long long)
+_NETCDF4CXX_READ_VAR(float)
+_NETCDF4CXX_READ_VAR(double)
 
 }  // namespace netcdf

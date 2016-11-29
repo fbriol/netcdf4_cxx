@@ -52,8 +52,7 @@ ScaleMissing::ScaleMissing(const DataSet& dataset)
   attribute = dataset.FindAttribute(CF::VALID_RANGE);
   has_valid_range_ = attribute != nullptr;
   if (has_valid_range_) {
-    std::vector<double> values;
-    attribute->Read(values);
+    std::vector<double> values = attribute->Read<double>();
     valid_min_ = values.at(0);
     valid_max_ = values.at(1);
   }

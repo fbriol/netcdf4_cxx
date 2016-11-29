@@ -267,74 +267,13 @@ class Attribute : public AbstractDataSet {
    * @return a reference on values read
    */
   template <typename T>
-  std::vector<T>& Read(std::vector<T>& values) const {
+  std::vector<T> Read() const {
     if (sizeof(T) != GetDataType().GetSize())
       throw std::invalid_argument(
           "the size of the NetCDF type does not "
           "match the size of the given C++ type");
-    values = std::vector<T>(GetLength());
+    std::vector<T> values(GetLength());
     Check(nc_get_att(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<signed char>& Read(std::vector<signed char>& values) const {
-    values = std::vector<signed char>(GetLength());
-    Check(nc_get_att_schar(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<unsigned char>& Read(std::vector<unsigned char>& values) const {
-    values = std::vector<unsigned char>(GetLength());
-    Check(nc_get_att_uchar(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<short>& Read(std::vector<short>& values) const {
-    values = std::vector<short>(GetLength());
-    Check(nc_get_att_short(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<unsigned short>& Read(std::vector<unsigned short>& values) const {
-    values = std::vector<unsigned short>(GetLength());
-    Check(nc_get_att_ushort(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<int>& Read(std::vector<int>& values) const {
-    values = std::vector<int>(GetLength());
-    Check(nc_get_att_int(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<unsigned int>& Read(std::vector<unsigned int>& values) const {
-    values = std::vector<unsigned int>(GetLength());
-    Check(nc_get_att_uint(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<long long>& Read(std::vector<long long>& values) const {
-    values = std::vector<long long>(GetLength());
-    Check(nc_get_att_longlong(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<unsigned long long>& Read(
-      std::vector<unsigned long long>& values) const {
-    values = std::vector<unsigned long long>(GetLength());
-    Check(nc_get_att_ulonglong(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<float>& Read(std::vector<float>& values) const {
-    values = std::vector<float>(GetLength());
-    Check(nc_get_att_float(nc_id_, id_, name_.c_str(), &values[0]));
-    return values;
-  }
-
-  std::vector<double>& Read(std::vector<double>& values) const {
-    values = std::vector<double>(GetLength());
-    Check(nc_get_att_double(nc_id_, id_, name_.c_str(), &values[0]));
     return values;
   }
 
@@ -345,8 +284,8 @@ class Attribute : public AbstractDataSet {
    */
   template <typename T>
   decltype(auto) ReadScalar() const {
-    std::vector<T> values;
-    return Read(values).at(0);
+    std::vector<T> values = Read<T>();
+    return values.at(0);
   }
 
   /**
@@ -370,5 +309,20 @@ class Attribute : public AbstractDataSet {
  private:
   std::string name_;
 };
+
+#define _NETCDF4CXX_READ_ATT(type) \
+  template <>                      \
+  std::vector<type> Attribute::Read() const;
+
+_NETCDF4CXX_READ_ATT(signed char)
+_NETCDF4CXX_READ_ATT(unsigned char)
+_NETCDF4CXX_READ_ATT(short)
+_NETCDF4CXX_READ_ATT(unsigned short)
+_NETCDF4CXX_READ_ATT(int)
+_NETCDF4CXX_READ_ATT(unsigned int)
+_NETCDF4CXX_READ_ATT(long long)
+_NETCDF4CXX_READ_ATT(unsigned long long)
+_NETCDF4CXX_READ_ATT(float)
+_NETCDF4CXX_READ_ATT(double)
 
 }  // namespace netcdf

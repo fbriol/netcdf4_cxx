@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(test_text) {
     BOOST_CHECK_EQUAL(att.IsText(), false);       \
     BOOST_CHECK_EQUAL(att.name(), "attribute");   \
     BOOST_CHECK_EQUAL(att.GetLength(), 10);       \
-    att.Read(out);                                \
+    out = att.Read<CPP_TYPE>();                   \
     for (int i = 0; i < 10; ++i) {                \
       BOOST_CHECK_EQUAL(out.at(i), in.at(i));     \
     }                                             \
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(test_compound) {
   att.Write(type, in);
 
   int idx = 0;
-  for (auto& item : att.Read(out)) {
+  for (auto& item : att.Read<Compound>()) {
     BOOST_CHECK_EQUAL(item.a, in[idx].a);
     BOOST_CHECK_EQUAL(item.b, in[idx++].b);
   }

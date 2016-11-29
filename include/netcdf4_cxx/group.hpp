@@ -138,10 +138,6 @@ class Group : public DataSet {
    */
   explicit constexpr Group(const int group_id) noexcept { nc_id_ = group_id; }
 
-  // Dump this instance into a human-readable text representation
-  static std::string DumpCommonDataFormLanguage(const Group& group,
-                                                const int level = 0);
-
  protected:
   /**
    * Create an empty Group

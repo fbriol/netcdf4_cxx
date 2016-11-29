@@ -31,6 +31,25 @@ class CStringArray : public std::vector<char*> {
   }
 };
 
+#define __NETCDF4CXX_READ_ATT(type, sufix)                             \
+  template <>                                                          \
+  std::vector<type> Attribute::Read() const {                          \
+    std::vector<type> values(GetLength());                             \
+    Check(nc_get_att_##sufix(nc_id_, id_, name_.c_str(), &values[0])); \
+    return values;                                                     \
+  }
+
+__NETCDF4CXX_READ_ATT(signed char, schar)
+__NETCDF4CXX_READ_ATT(unsigned char, uchar)
+__NETCDF4CXX_READ_ATT(short, short)
+__NETCDF4CXX_READ_ATT(unsigned short, ushort)
+__NETCDF4CXX_READ_ATT(int, int)
+__NETCDF4CXX_READ_ATT(unsigned int, uint)
+__NETCDF4CXX_READ_ATT(long long, longlong)
+__NETCDF4CXX_READ_ATT(unsigned long long, ulonglong)
+__NETCDF4CXX_READ_ATT(float, float)
+__NETCDF4CXX_READ_ATT(double, double)
+
 std::vector<std::string> Attribute::ReadString() const {
   CStringArray buffer(GetLength());
   std::vector<std::string> result;

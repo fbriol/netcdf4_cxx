@@ -149,7 +149,7 @@ class ScaleMissing {
    *
    * @return true if value is missing
    */
-  inline constexpr bool IsMissing(const double value) const noexcept {
+  inline bool IsMissing(const double value) const noexcept {
     if (std::isnan(value)) return true;
     if (IsMissingValue(value)) return true;
     if (IsFillValue(value)) return true;
