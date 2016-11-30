@@ -96,7 +96,8 @@ class Range {
    */
   size_t GetSize() const {
     ptrdiff_t distance = end_ - start_;
-    return std::ceil(static_cast<double>(distance) / step_);
+    return static_cast<size_t>(
+        std::ceil(static_cast<double>(distance) / static_cast<double>(step_)));
   }
 
   /**
@@ -376,7 +377,7 @@ class Hyperslab {
    * @param index index into the list of Ranges
    * @return Range
    */
-  Range GetRange(const int index) const {
+  Range GetRange(const size_t index) const {
     return step_.empty()
                ? Range(start_.at(index), end_.at(index))
                : Range(start_.at(index), end_.at(index), step_.at(index));

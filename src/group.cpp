@@ -28,7 +28,8 @@ Variable Group::AddVariable(const std::string& name, const type::Generic& type,
   for (auto& item : dimensions) {
     dimids.push_back(item.id());
   }
-  Check(nc_def_var(nc_id_, name.c_str(), type.id(), dimids.size(),
+  Check(nc_def_var(nc_id_, name.c_str(), type.id(),
+                   static_cast<int>(dimids.size()),
                    dimids.size() ? &dimids[0] : nullptr, &var_id));
   return Variable(*this, var_id);
 }

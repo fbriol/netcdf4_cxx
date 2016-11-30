@@ -484,11 +484,11 @@ class Enum : public Generic {
    * @return the pair
    */
   template <typename T>
-  std::pair<std::string, T> Value(const int index) const {
+  std::pair<std::string, T> Value(const size_t index) const {
     char name[NC_MAX_NAME + 1];
     T value;
 
-    Check(nc_inq_enum_member(nc_id_, id_, index, name,
+    Check(nc_inq_enum_member(nc_id_, id_, static_cast<int>(index), name,
                              static_cast<void*>(&value)));
 
     return std::pair<std::string, T>(name, value);
@@ -641,9 +641,10 @@ class Compound : public Generic {
    * @param index Zero-based index of the member
    * @return the name of the member
    */
-  std::string GetMemberName(const int index) const {
+  std::string GetMemberName(const size_t index) const {
     char name[NC_MAX_NAME];
-    Check(nc_inq_compound_fieldname(nc_id_, id_, index, name));
+    Check(
+        nc_inq_compound_fieldname(nc_id_, id_, static_cast<int>(index), name));
     return name;
   }
 
@@ -666,9 +667,10 @@ class Compound : public Generic {
    * @param index Zero-based index of the member
    * @return byte offset
    */
-  size_t GetMemberOffset(const int index) const {
+  size_t GetMemberOffset(const size_t index) const {
     size_t result;
-    Check(nc_inq_compound_fieldoffset(nc_id_, id_, index, &result));
+    Check(nc_inq_compound_fieldoffset(nc_id_, id_, static_cast<int>(index),
+                                      &result));
     return result;
   }
 
@@ -678,9 +680,10 @@ class Compound : public Generic {
    * @param index Zero-based index of the member
    * @return Generic type of the member
    */
-  Generic GetMemberClass(const int index) const {
+  Generic GetMemberClass(const size_t index) const {
     nc_type type;
-    Check(nc_inq_compound_fieldtype(nc_id_, id_, index, &type));
+    Check(
+        nc_inq_compound_fieldtype(nc_id_, id_, static_cast<int>(index), &type));
     return Generic(*this, type);
   }
 
@@ -691,7 +694,7 @@ class Compound : public Generic {
    * @param index Zero-based index of the member
    * @return Compound type instance
    */
-  Compound GetMemberCompound(const int index) const {
+  Compound GetMemberCompound(const size_t index) const {
     return Compound(*this, GetMemberClass(index).id());
   }
 
@@ -702,7 +705,7 @@ class Compound : public Generic {
    * @param index Zero-based index of the member
    * @return Enum type instance
    */
-  Enum GetMemberEnum(const int index) const {
+  Enum GetMemberEnum(const size_t index) const {
     return Enum(*this, GetMemberClass(index).id());
   }
 
@@ -723,7 +726,7 @@ class Compound : public Generic {
    * @param index Zero-based index of the member
    * @return Opaque type instance
    */
-  Opaque GetMemberOpaque(const int index) const {
+  Opaque GetMemberOpaque(const size_t index) const {
     return Opaque(*this, GetMemberClass(index).id());
   }
 
@@ -734,9 +737,10 @@ class Compound : public Generic {
    * @param index Zero-based index of the member
    * @return the number of dimensions
    */
-  int GetNDims(const int index) const {
+  int GetNDims(const size_t index) const {
     int result;
-    Check(nc_inq_compound_fieldndims(nc_id_, id_, index, &result));
+    Check(nc_inq_compound_fieldndims(nc_id_, id_, static_cast<int>(index),
+                                     &result));
     return result;
   }
 
@@ -748,14 +752,15 @@ class Compound : public Generic {
    * @return the shape of the specified member or one empty vector for a
    *  scalar
    */
-  std::vector<int> GetDims(const int index) const {
+  std::vector<int> GetDims(const size_t index) const {
     int ndims = GetNDims(index);
     std::vector<int> result;
 
     if (ndims == 0) return result;
 
     result.resize(ndims);
-    Check(nc_inq_compound_fielddim_sizes(nc_id_, id_, index, &result[0]));
+    Check(nc_inq_compound_fielddim_sizes(nc_id_, id_, static_cast<int>(index),
+                                         &result[0]));
     return result;
   }
 
@@ -785,7 +790,7 @@ class Compound : public Generic {
       InsertMember(name, offset, type);
     else {
       Check(nc_insert_array_compound(nc_id_, id_, name.c_str(), offset,
-                                     type.id(), shape.size(),
+                                     type.id(), static_cast<int>(shape.size()),
                                      const_cast<int*>(&shape[0])));
     }
   }
