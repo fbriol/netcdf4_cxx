@@ -98,66 +98,6 @@ class Attribute : public AbstractDataSet {
                      &data[0]));
   }
 
-  void Write(const type::Generic& data_type,
-             const std::vector<signed char>& data) const {
-    Check(nc_put_att_schar(nc_id_, id_, name_.c_str(), data_type.id(),
-                           data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<unsigned char>& data) const {
-    Check(nc_put_att_uchar(nc_id_, id_, name_.c_str(), data_type.id(),
-                           data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<short>& data) const {
-    Check(nc_put_att_short(nc_id_, id_, name_.c_str(), data_type.id(),
-                           data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<unsigned short>& data) const {
-    Check(nc_put_att_ushort(nc_id_, id_, name_.c_str(), data_type.id(),
-                            data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<int>& data) const {
-    Check(nc_put_att_int(nc_id_, id_, name_.c_str(), data_type.id(),
-                         data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<unsigned int>& data) const {
-    Check(nc_put_att_uint(nc_id_, id_, name_.c_str(), data_type.id(),
-                          data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<long long>& data) const {
-    Check(nc_put_att_longlong(nc_id_, id_, name_.c_str(), data_type.id(),
-                              data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<unsigned long long>& data) const {
-    Check(nc_put_att_ulonglong(nc_id_, id_, name_.c_str(), data_type.id(),
-                               data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<float>& data) const {
-    Check(nc_put_att_float(nc_id_, id_, name_.c_str(), data_type.id(),
-                           data.size(), &data[0]));
-  }
-
-  void Write(const type::Generic& data_type,
-             const std::vector<double>& data) const {
-    Check(nc_put_att_double(nc_id_, id_, name_.c_str(), data_type.id(),
-                            data.size(), &data[0]));
-  }
-
   /**
    * Write a text (ASCII/ISO characters) Attribute
    *
@@ -309,20 +249,5 @@ class Attribute : public AbstractDataSet {
  private:
   std::string name_;
 };
-
-#define _NETCDF4CXX_READ_ATT(type) \
-  template <>                      \
-  std::vector<type> Attribute::Read() const;
-
-_NETCDF4CXX_READ_ATT(signed char)
-_NETCDF4CXX_READ_ATT(unsigned char)
-_NETCDF4CXX_READ_ATT(short)
-_NETCDF4CXX_READ_ATT(unsigned short)
-_NETCDF4CXX_READ_ATT(int)
-_NETCDF4CXX_READ_ATT(unsigned int)
-_NETCDF4CXX_READ_ATT(long long)
-_NETCDF4CXX_READ_ATT(unsigned long long)
-_NETCDF4CXX_READ_ATT(float)
-_NETCDF4CXX_READ_ATT(double)
 
 }  // namespace netcdf
