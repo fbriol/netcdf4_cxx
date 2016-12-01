@@ -47,6 +47,17 @@ class Variable : public DataSet {
   Variable(const Object& object, const int var_id) : DataSet(object, var_id) {}
 
   /**
+   * Creating a variable from an existing data set.
+   *
+   * @param rhs
+   */
+  Variable(const AbstractDataSet& rhs) : DataSet(rhs, rhs.id()) {
+    if (IsGlobal())
+      throw std::invalid_argument(
+          "The supplied dataset does not define a variable.");
+  }
+
+  /**
    * Get the data type of the Variable.
    *
    * @return data type
