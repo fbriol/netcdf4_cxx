@@ -65,6 +65,13 @@ class AbstractDataSet : public Object {
   int id() const noexcept { return id_; }
 
   /**
+   * Is global dataset?
+   *
+   * @return true if global dataset
+   */
+  bool IsGlobal() const noexcept { return id_ == NC_GLOBAL; }
+
+  /**
    * Test if two NetCDF data set are different
    *
    * @param rhs Other data set to compare

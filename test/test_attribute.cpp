@@ -39,6 +39,7 @@ BOOST_AUTO_TEST_CASE(test_string) {
 
   BOOST_CHECK(att.GetDataType().GetPrimitive() ==
               netcdf::type::Primitive::kString);
+  BOOST_CHECK_EQUAL(att.IsGlobal(), true);
   BOOST_CHECK_EQUAL(att.IsString(), true);
   BOOST_CHECK_EQUAL(att.IsText(), false);
   BOOST_CHECK_EQUAL(att.name(), "attribute");
