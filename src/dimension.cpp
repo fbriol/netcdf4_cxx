@@ -43,8 +43,8 @@ std::string Dimension::GetLongName() const {
 }
 
 void Dimension::Copy(const Object& object) const {
-  Group(object).AddDimension(GetShortName(),
-                             IsUnlimited() ? NC_UNLIMITED : GetLength());
+  Group(object)
+      .AddDimension(GetShortName(), IsUnlimited() ? NC_UNLIMITED : GetLength());
 }
 
 }  // namespace netcdf

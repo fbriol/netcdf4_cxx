@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(test_unlimited) {
   BOOST_CHECK_EQUAL(y.IsUnlimited(), true);
 }
 
-#define TEST_RW(NAME, TYPE)                                                    \
+#define TEST_RW(NAME, TYPE, NCTYPE)                                            \
   BOOST_AUTO_TEST_CASE(NAME) {                                                 \
     Object object;                                                             \
     std::vector<size_t> shape({64, 128});                                      \
@@ -108,11 +108,11 @@ BOOST_AUTO_TEST_CASE(test_unlimited) {
                                                                                \
     nc_def_dim(object.nc_id(), "x", shape[0], &dimid[0]);                      \
     nc_def_dim(object.nc_id(), "y", NC_UNLIMITED, &dimid[1]);                  \
-    nc_def_var(object.nc_id(), "m", NC_BYTE, shape.size(), &dimid[0], &varid); \
+    nc_def_var(object.nc_id(), "m", NCTYPE, shape.size(), &dimid[0], &varid);  \
                                                                                \
     netcdf::Variable netcdf_var(object, varid);                                \
-    std::vector<TYPE> cpp_var_ref(64 * 128);                                   \
-    std::vector<TYPE> cpp_var_res;                                             \
+    std::valarray<TYPE> cpp_var_ref(64 * 128);                                 \
+    std::valarray<TYPE> cpp_var_res;                                           \
                                                                                \
     for (size_t i = 0; i < cpp_var_res.size(); ++i) {                          \
       cpp_var_ref[i] = static_cast<TYPE>(i);                                   \
@@ -127,16 +127,16 @@ BOOST_AUTO_TEST_CASE(test_unlimited) {
     }                                                                          \
   }
 
-TEST_RW(test_byte, signed char)
-TEST_RW(test_ubyte, unsigned char)
-TEST_RW(test_short, short)
-TEST_RW(test_ushort, unsigned char)
-TEST_RW(test_int, int)
-TEST_RW(test_uint, unsigned int)
-TEST_RW(test_int64, long long)
-TEST_RW(test_uint64, unsigned long long)
-TEST_RW(test_float, float)
-TEST_RW(test_double, double)
+TEST_RW(test_byte, signed char, NC_BYTE)
+TEST_RW(test_ubyte, unsigned char, NC_UBYTE)
+TEST_RW(test_short, short, NC_SHORT)
+TEST_RW(test_ushort, unsigned short, NC_USHORT)
+TEST_RW(test_int, int, NC_INT)
+TEST_RW(test_uint, unsigned int, NC_UINT)
+TEST_RW(test_int64, long long, NC_INT64)
+TEST_RW(test_uint64, unsigned long long, NC_UINT64)
+TEST_RW(test_float, float, NC_FLOAT)
+TEST_RW(test_double, double, NC_DOUBLE)
 
 BOOST_AUTO_TEST_CASE(test_compound) {
   Object object;
@@ -163,13 +163,13 @@ BOOST_AUTO_TEST_CASE(test_compound) {
   nc_def_var(object.nc_id(), "m", type.id(), shape.size(), &dimid[0], &varid);
 
   netcdf::Variable netcdf_var(object, varid);
-  std::vector<Coordinate> cpp_var_ref(64 * 128);
-  std::vector<Coordinate> cpp_var_res;
+  std::valarray<Coordinate> cpp_var_ref(64 * 128);
+  std::valarray<Coordinate> cpp_var_res;
 
   // Fill the variable
   for (size_t i = 0; i < shape[0]; ++i) {
     for (size_t j = 0; j < shape[1]; ++j) {
-      cpp_var_ref.at(j + i * shape[1]) = Coordinate({i, j});
+      cpp_var_ref[j + i * shape[1]] = Coordinate({i, j});
     }
   }
 
@@ -180,8 +180,8 @@ BOOST_AUTO_TEST_CASE(test_compound) {
   BOOST_REQUIRE(cpp_var_ref.size() == cpp_var_res.size());
   for (size_t i = 0; i < shape[0]; ++i) {
     for (size_t j = 0; j < shape[1]; ++j) {
-      const Coordinate& ref = cpp_var_ref.at(j + i * shape[1]);
-      const Coordinate& res = cpp_var_res.at(j + i * shape[1]);
+      const Coordinate& ref = cpp_var_ref[j + i * shape[1]];
+      const Coordinate& res = cpp_var_res[j + i * shape[1]];
       BOOST_CHECK_EQUAL(ref.j, res.j);
       BOOST_CHECK_EQUAL(ref.i, res.i);
     }
@@ -191,7 +191,6 @@ BOOST_AUTO_TEST_CASE(test_compound) {
   netcdf::Hyperslab select(std::vector<size_t>({12, 31}),
                            std::vector<size_t>({48, 112}),
                            std::vector<ptrdiff_t>({4, 7}));
-  cpp_var_res.clear();
   cpp_var_res = netcdf_var.Read<Coordinate>(select);
 
   BOOST_REQUIRE(cpp_var_res.size() == select.GetSize());
@@ -200,7 +199,7 @@ BOOST_AUTO_TEST_CASE(test_compound) {
 
   for (size_t i = 0; i < select.GetSize(0); ++i) {
     for (size_t j = 0; j < select.GetSize(1); ++j) {
-      const Coordinate& res = cpp_var_res.at(j + i * select.GetSize(1));
+      const Coordinate& res = cpp_var_res[j + i * select.GetSize(1)];
       BOOST_CHECK_EQUAL(res.i, rx.Item(i));
       BOOST_CHECK_EQUAL(res.j, ry.Item(j));
     }

@@ -28,6 +28,7 @@
 #include <numeric>
 #include <stdexcept>
 #include <string>
+#include <valarray>
 #include <vector>
 
 namespace netcdf {
@@ -206,7 +207,7 @@ class Variable : public DataSet {
    * @return a reference on the data read
    */
   template <class T>
-  std::vector<T> Read(const Hyperslab& hyperslab) const {
+  std::valarray<T> Read(const Hyperslab& hyperslab) const {
     if (sizeof(T) != GetDataType().GetSize())
       throw std::invalid_argument(
           "the size of the NetCDF type does not "
@@ -217,7 +218,7 @@ class Variable : public DataSet {
           "Hyperslab defined overlap the "
           "variable definition");
 
-    std::vector<T> values(hyperslab.GetSize());
+    std::valarray<T> values(hyperslab.GetSize());
 
     if (hyperslab.OnlyAdjacent())
       Check(nc_get_vara(nc_id_, id_, &hyperslab.start()[0],
@@ -236,7 +237,7 @@ class Variable : public DataSet {
    * @return a reference on the data read
    */
   template <class T>
-  std::vector<T> Read() const {
+  std::valarray<T> Read() const {
     return Read<T>(Hyperslab(GetShape()));
   }
 
@@ -247,7 +248,7 @@ class Variable : public DataSet {
    * @param values values to write
    */
   template <typename T>
-  void Write(const Hyperslab& hyperslab, const std::vector<T>& values) const {
+  void Write(const Hyperslab& hyperslab, const std::valarray<T>& values) const {
     if (sizeof(T) != GetDataType().GetSize())
       throw std::invalid_argument(
           "the size of the NetCDF type does not "
@@ -276,44 +277,15 @@ class Variable : public DataSet {
     }
   }
 
-#define _NETCDF4CXX_WRITE_VAR(type) \
-  void Write(const Hyperslab& hyperslab, const std::vector<type>& values) const;
-
-  _NETCDF4CXX_WRITE_VAR(signed char)
-  _NETCDF4CXX_WRITE_VAR(unsigned char)
-  _NETCDF4CXX_WRITE_VAR(short)
-  _NETCDF4CXX_WRITE_VAR(unsigned short)
-  _NETCDF4CXX_WRITE_VAR(int)
-  _NETCDF4CXX_WRITE_VAR(unsigned int)
-  _NETCDF4CXX_WRITE_VAR(long long)
-  _NETCDF4CXX_WRITE_VAR(unsigned long long)
-  _NETCDF4CXX_WRITE_VAR(float)
-  _NETCDF4CXX_WRITE_VAR(double)
-
   /**
    * Write all data for this variable
    *
    * @param values values to write
    */
   template <class T>
-  void Write(std::vector<T>& values) const {
+  void Write(std::valarray<T>& values) const {
     Write(Hyperslab(), values);
   }
 };
-
-#define _NETCDF4CXX_READ_VAR(type) \
-  template <>                      \
-  std::vector<type> Variable::Read(const Hyperslab& hyperslab) const;
-
-_NETCDF4CXX_READ_VAR(signed char)
-_NETCDF4CXX_READ_VAR(unsigned char)
-_NETCDF4CXX_READ_VAR(short)
-_NETCDF4CXX_READ_VAR(unsigned short)
-_NETCDF4CXX_READ_VAR(int)
-_NETCDF4CXX_READ_VAR(unsigned int)
-_NETCDF4CXX_READ_VAR(long long)
-_NETCDF4CXX_READ_VAR(unsigned long long)
-_NETCDF4CXX_READ_VAR(float)
-_NETCDF4CXX_READ_VAR(double)
 
 }  // namespace netcdf

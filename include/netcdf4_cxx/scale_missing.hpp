@@ -18,7 +18,7 @@
 
 #include <cmath>
 #include <iterator>
-#include <vector>
+#include <valarray>
 
 namespace netcdf {
 
@@ -150,10 +150,7 @@ class ScaleMissing {
    * @return true if value is missing
    */
   inline bool IsMissing(const double value) const noexcept {
-    if (std::isnan(value)) return true;
-    if (IsMissingValue(value)) return true;
-    if (IsFillValue(value)) return true;
-    return false;
+    return std::isnan(value) || IsMissingValue(value) || IsFillValue(value);
   }
 
   /**
@@ -162,10 +159,12 @@ class ScaleMissing {
    * @param array data to convert
    */
   template <typename T>
-  void InflateScaleOffset(std::vector<T>& array) const {
+  void InflateScaleOffset(std::valarray<T>& array) const {
     if (!has_scale_offset_) return;
 
-    for (auto& item : array) {
+    const size_t n = array.size();
+    for (size_t ix = 0; ix < n; ++ix) {
+      T& item = array[ix];
       if (!IsMissing(item)) item = item * scale_ + offset_;
     }
   }
@@ -180,7 +179,9 @@ class ScaleMissing {
   void DeflateScaleOffset(std::vector<T>& array) const {
     if (!has_scale_offset_) return;
 
-    for (auto& item : array) {
+    const size_t n = array.size();
+    for (size_t ix = 0; ix < n; ++ix) {
+      T& item = array[ix];
       if (!IsMissing(item)) item = (item - offset_) / scale_;
     }
   }
@@ -194,7 +195,9 @@ class ScaleMissing {
    */
   template <typename T>
   void SetMissing(std::vector<T>& array, const T& value) const {
-    for (auto& item : array) {
+    const size_t n = array.size();
+    for (size_t ix = 0; ix < n; ++ix) {
+      T& item = array[ix];
       if (IsMissing(item)) item = value;
     }
   }

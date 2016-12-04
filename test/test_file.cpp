@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(type_constructors) {
   netcdf::Dimension dim = file.AddDimension("x", 10);
   std::vector<netcdf::Dimension> dims({dim});
   netcdf::Variable var = file.AddVariable("var", netcdf::type::Int(file), dims);
-  std::vector<int> values({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+  std::valarray<int> values({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   BOOST_CHECK_THROW(var.Write(values), netcdf::Error);
   file.LeaveDefineMode();
   BOOST_CHECK_NO_THROW(var.Write(values));
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(type_constructors) {
   auto src_dims = file.GetDimensions();
   auto dst_dims = copy.GetDimensions();
   BOOST_CHECK_EQUAL(src_dims.size(), dst_dims.size());
-  for (auto ix = 0; ix < src_dims.size(); ++ix) {
+  for (size_t ix = 0; ix < src_dims.size(); ++ix) {
     BOOST_CHECK_EQUAL(src_dims[ix].GetLength(), dst_dims[ix].GetLength());
   }
 
@@ -68,9 +68,11 @@ BOOST_AUTO_TEST_CASE(type_constructors) {
   auto dst_vars = copy.GetVariables();
   BOOST_CHECK_EQUAL(src_vars.size(), dst_vars.size());
   var = dst_vars.front();
-  std::vector<int> dst_var = var.Read<int>();
-  BOOST_CHECK_EQUAL_COLLECTIONS(dst_var.begin(), dst_var.end(), values.begin(),
-                                values.end());
+  std::valarray<int> dst_var = var.Read<int>();
+  BOOST_CHECK_EQUAL(dst_var.size(), values.size());
+  for (size_t ix = 0; ix < dst_var.size(); ++ix) {
+    BOOST_CHECK_EQUAL(dst_var[ix], values[ix]);
+  }
 }
 
 // BOOST_AUTO_TEST_CASE( test_copy ) {
