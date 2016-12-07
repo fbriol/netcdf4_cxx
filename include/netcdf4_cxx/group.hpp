@@ -79,7 +79,7 @@ class GroupIteratorType : public std::iterator<std::forward_iterator_tag, T> {
   /**
    * Test whether two iterators are different
    *
-   * @param other Iterator to compare
+   * @param iterator Iterator to compare
    * @return true if the two iterators are different
    */
   bool operator!=(const GroupIteratorType& iterator) const {
@@ -272,7 +272,7 @@ class Group : public DataSet {
   /**
    * Get the common parent of this and the other group.
    *
-   * @param group the other Group
+   * @param other the other Group
    * @return common parent of this and the other Group or NULL if the
    *  common parent is the root Group
    */
@@ -343,8 +343,8 @@ class Group : public DataSet {
    * @return the group
    */
   Group GetNamedGroup(const std::string& name) const {
-    int nc_id = -1;  // CLANG -Wuninitialized
-    nc_inq_grp_ncid(nc_id, name.c_str(), &nc_id);
+    int nc_id;
+    Check(nc_inq_grp_ncid(nc_id_, name.c_str(), &nc_id));
     return Group(nc_id);
   }
 
@@ -435,6 +435,16 @@ class Group : public DataSet {
    * @return a constant iterator
    */
   ConstGroupIterator end() const { return ConstGroupIterator(nullptr); }
+
+  /**
+   * Split a path full path to a variable into the path to the group and the
+   * variable name
+   *
+   * @param path full path to the variable
+   * @return a pair that contains the path to the group and the variable name
+   */
+  static std::pair<std::list<std::string>, std::string> SplitGroupsAndVariable(
+      const std::string& path);
 };
 
 }  // namespace netcdf

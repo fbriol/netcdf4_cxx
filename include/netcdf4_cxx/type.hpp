@@ -748,7 +748,7 @@ class Compound : public Generic {
    * Get the sizes of dimensions of the specified member in this Compound
    * type
    *
-   * @param index
+   * @param index Zero-based index of the member
    * @return the shape of the specified member or one empty vector for a
    *  scalar
    */

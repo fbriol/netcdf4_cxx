@@ -98,11 +98,29 @@ class Attribute : public AbstractDataSet {
                      &data[0]));
   }
 
+#define _NETCDF4CXX_WRITE_ATT(_type, _sufix)                                 \
+  void Write(const type::Generic& data_type, const std::vector<_type>& data) \
+      const {                                                                \
+    Check(nc_put_att_##_sufix(nc_id_, id_, name_.c_str(), data_type.id(),    \
+                              data.size(), &data[0]));                       \
+  }
+
+  _NETCDF4CXX_WRITE_ATT(signed char, schar)
+  _NETCDF4CXX_WRITE_ATT(short, short)
+  _NETCDF4CXX_WRITE_ATT(unsigned char, uchar)
+  _NETCDF4CXX_WRITE_ATT(unsigned short, ushort)
+  _NETCDF4CXX_WRITE_ATT(int, int)
+  _NETCDF4CXX_WRITE_ATT(unsigned int, uint)
+  _NETCDF4CXX_WRITE_ATT(long long, longlong)
+  _NETCDF4CXX_WRITE_ATT(unsigned long long, ulonglong)
+  _NETCDF4CXX_WRITE_ATT(float, float)
+  _NETCDF4CXX_WRITE_ATT(double, double)
+
   /**
-   * Write a text (ASCII/ISO characters) Attribute
-   *
-   * @param data Text attribute
-   */
+  * Write a text (ASCII/ISO characters) Attribute
+  *
+  * @param data Text attribute
+  */
   void WriteText(const std::string& data) const {
     Check(
         nc_put_att_text(nc_id_, id_, name_.c_str(), data.size(), data.c_str()));
@@ -203,8 +221,7 @@ class Attribute : public AbstractDataSet {
   /**
    * Read the value as an array.
    *
-   * @param values Array of values read
-   * @return a reference on values read
+   * @return a new container on values read
    */
   template <typename T>
   std::vector<T> Read() const {
@@ -249,5 +266,20 @@ class Attribute : public AbstractDataSet {
  private:
   std::string name_;
 };
+
+#define _NETCDF4CXX_READ_ATT(_type) \
+  template <>                       \
+  std::vector<_type> Attribute::Read() const;
+
+_NETCDF4CXX_READ_ATT(signed char)
+_NETCDF4CXX_READ_ATT(unsigned char)
+_NETCDF4CXX_READ_ATT(short)
+_NETCDF4CXX_READ_ATT(unsigned short)
+_NETCDF4CXX_READ_ATT(int)
+_NETCDF4CXX_READ_ATT(unsigned int)
+_NETCDF4CXX_READ_ATT(long long)
+_NETCDF4CXX_READ_ATT(unsigned long long)
+_NETCDF4CXX_READ_ATT(float)
+_NETCDF4CXX_READ_ATT(double)
 
 }  // namespace netcdf

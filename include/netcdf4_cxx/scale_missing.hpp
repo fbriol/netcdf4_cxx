@@ -159,7 +159,7 @@ class ScaleMissing {
    * @param array data to convert
    */
   template <typename T>
-  void InflateScaleOffset(std::valarray<T>& array) const {
+  std::valarray<T>& Inflate(std::valarray<T>& array) const {
     if (!has_scale_offset_) return;
 
     const size_t n = array.size();
@@ -167,6 +167,7 @@ class ScaleMissing {
       T& item = array[ix];
       if (!IsMissing(item)) item = item * scale_ + offset_;
     }
+    return array;
   }
 
   /**
@@ -176,7 +177,7 @@ class ScaleMissing {
    *
    */
   template <typename T>
-  void DeflateScaleOffset(std::vector<T>& array) const {
+  std::valarray<T>& Deflate(std::valarray<T>& array) const {
     if (!has_scale_offset_) return;
 
     const size_t n = array.size();
@@ -184,6 +185,7 @@ class ScaleMissing {
       T& item = array[ix];
       if (!IsMissing(item)) item = (item - offset_) / scale_;
     }
+    return array;
   }
 
   /**
@@ -194,12 +196,45 @@ class ScaleMissing {
    * @param value the value that represents the "missing" value
    */
   template <typename T>
-  void SetMissing(std::vector<T>& array, const T& value) const {
+  std::valarray<T>& Mask(std::valarray<T>& array, const T& value) const {
     const size_t n = array.size();
     for (size_t ix = 0; ix < n; ++ix) {
       T& item = array[ix];
       if (IsMissing(item)) item = value;
     }
+    return array;
+  }
+
+  /**
+   * Apply Mask and Deflate operations in one operation
+   *
+   * @param array data to convert
+   * @param value the value that represents the "missing" value
+   */
+  template <typename T>
+  std::valarray<T>& MaskAndDeflate(std::valarray<T>& array,
+                                   const T& value) const {
+    const size_t n = array.size();
+    for (size_t ix = 0; ix < n; ++ix) {
+      T& item = array[ix];
+      item = IsMissing(item) ? value : (item - offset_) / scale_;
+    }
+    return array;
+  }
+
+  /**
+   * Apply Mask and Inflate operations in one operation
+   *
+   * @param array data to convert
+   */
+  template <typename T>
+  std::valarray<T>& MaskAndInflate(std::valarray<T>& array) const {
+    const size_t n = array.size();
+    for (size_t ix = 0; ix < n; ++ix) {
+      T& item = array[ix];
+      item = IsMissing(item) ? missing_value_ : item * scale_ + offset_;
+    }
+    return array;
   }
 };
 

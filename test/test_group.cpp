@@ -94,7 +94,8 @@ BOOST_AUTO_TEST_CASE(test_accessors) {
   BOOST_CHECK(group.FindDimension("") == nullptr);
   BOOST_CHECK(group.FindDimension("x") != nullptr);
 
-  BOOST_CHECK_EQUAL(group.GetNamedGroup("/a/b/c").id(), last.id());
+  BOOST_CHECK_EQUAL(group.GetNamedGroup("a").id(),
+                    last.GetParentGroup().GetParentGroup().id());
 
   BOOST_CHECK_EQUAL(group.GetVariables().size(), 2);
   BOOST_CHECK(group.FindVariable("") == nullptr);
@@ -190,5 +191,12 @@ BOOST_AUTO_TEST_CASE(test_walk) {
   BOOST_CHECK(b.FindGroup("c") != nullptr);
   BOOST_CHECK(d.FindGroup("c") == nullptr);
 }
+
+// BOOST_AUTO_TEST_CASE(test_split) {
+//   auto result = netcdf::Group::SplitGroupsAndVariable("a");
+//   for (const auto& item : result.first) {
+//     std::cout << item << std::endl;
+//   }
+// }
 
 BOOST_AUTO_TEST_SUITE_END()

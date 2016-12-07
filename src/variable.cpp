@@ -59,6 +59,70 @@ bool Variable::IsCoordinate() const {
   return false;
 }
 
+#define __NETCDF4CXX_READ_VAR(_type, _sufix)                                \
+  template <>                                                               \
+  std::valarray<_type> Variable::Read(const Hyperslab& hyperslab) const {   \
+    if (hyperslab > GetShape())                                             \
+      throw std::invalid_argument(                                          \
+          "Hyperslab defined overlap the "                                  \
+          "variable definition");                                           \
+    std::valarray<_type> values(hyperslab.GetSize());                       \
+    if (hyperslab.OnlyAdjacent())                                           \
+      Check(nc_get_vara_##_sufix(nc_id_, id_, &hyperslab.start()[0],        \
+                                 &hyperslab.GetSizeList()[0], &values[0])); \
+    else                                                                    \
+      Check(nc_get_vars_##_sufix(nc_id_, id_, &hyperslab.start()[0],        \
+                                 &hyperslab.GetSizeList()[0],               \
+                                 &hyperslab.step()[0], &values[0]));        \
+    return values;                                                          \
+  }
+
+__NETCDF4CXX_READ_VAR(signed char, schar)
+__NETCDF4CXX_READ_VAR(unsigned char, uchar)
+__NETCDF4CXX_READ_VAR(short, short)
+__NETCDF4CXX_READ_VAR(unsigned short, ushort)
+__NETCDF4CXX_READ_VAR(int, int)
+__NETCDF4CXX_READ_VAR(unsigned int, uint)
+__NETCDF4CXX_READ_VAR(long long, longlong)
+__NETCDF4CXX_READ_VAR(unsigned long long, ulonglong)
+__NETCDF4CXX_READ_VAR(float, float)
+__NETCDF4CXX_READ_VAR(double, double)
+
+#define __NETCDF4CXX_WRITE_VAR(_type, _sufix)                                 \
+  void Variable::Write(const Hyperslab& hyperslab,                            \
+                       const std::valarray<_type>& values) const {            \
+    if (hyperslab.IsEmpty()) {                                                \
+      if (IsUnlimited())                                                      \
+        throw std::runtime_error(                                             \
+            "You must specify a hyperslab for "                               \
+            "unlimited variables");                                           \
+      Check(nc_put_var_##_sufix(nc_id_, id_, &values[0]));                    \
+    } else {                                                                  \
+      if (values.size() != hyperslab.GetSize())                               \
+        throw std::invalid_argument(                                          \
+            "data size does not match hyperslab "                             \
+            "definition");                                                    \
+      if (hyperslab.OnlyAdjacent())                                           \
+        Check(nc_put_vara_##_sufix(nc_id_, id_, &hyperslab.start()[0],        \
+                                   &hyperslab.GetSizeList()[0], &values[0])); \
+      else                                                                    \
+        Check(nc_put_vars_##_sufix(nc_id_, id_, &hyperslab.start()[0],        \
+                                   &hyperslab.GetSizeList()[0],               \
+                                   &hyperslab.step()[0], &values[0]));        \
+    }                                                                         \
+  }
+
+__NETCDF4CXX_WRITE_VAR(signed char, schar)
+__NETCDF4CXX_WRITE_VAR(unsigned char, uchar)
+__NETCDF4CXX_WRITE_VAR(short, short)
+__NETCDF4CXX_WRITE_VAR(unsigned short, ushort)
+__NETCDF4CXX_WRITE_VAR(int, int)
+__NETCDF4CXX_WRITE_VAR(unsigned int, uint)
+__NETCDF4CXX_WRITE_VAR(long long, longlong)
+__NETCDF4CXX_WRITE_VAR(unsigned long long, ulonglong)
+__NETCDF4CXX_WRITE_VAR(float, float)
+__NETCDF4CXX_WRITE_VAR(double, double)
+
 void Variable::Copy(const Group& other) const {
   std::list<Attribute> attributes = GetAttributes();
   std::vector<Dimension> dimensions = GetDimensions();

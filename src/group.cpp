@@ -16,6 +16,7 @@
 
 #include <netcdf4_cxx/abstract_dataset.hpp>
 #include <netcdf4_cxx/group.hpp>
+#include <regex>
 #include <stdexcept>
 
 namespace netcdf {
@@ -212,6 +213,21 @@ std::shared_ptr<type::Generic> Group::FindDataType(
     if (result != nullptr or item.IsRoot()) break;
     item = item.GetParentGroup();
   }
+  return result;
+}
+
+std::pair<std::list<std::string>, std::string> Group::SplitGroupsAndVariable(
+    const std::string& path) {
+  std::pair<std::list<std::string>, std::string> result;
+  std::regex re("/");
+  std::sregex_token_iterator first{path.begin(), path.end(), re, -1}, last;
+
+  result.first = std::list<std::string>{first, last};
+  if (path.back() != '/' && result.first.size()) {
+    result.second = result.first.back();
+    result.first.pop_back();
+  }
+
   return result;
 }
 

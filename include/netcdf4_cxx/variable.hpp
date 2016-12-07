@@ -20,10 +20,12 @@
 #include <stddef.h>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <netcdf4_cxx/dataset.hpp>
 #include <netcdf4_cxx/dimension.hpp>
 #include <netcdf4_cxx/hyperslab.hpp>
 #include <netcdf4_cxx/netcdf.hpp>
+#include <netcdf4_cxx/scale_missing.hpp>
 #include <netcdf4_cxx/type.hpp>
 #include <numeric>
 #include <stdexcept>
@@ -50,7 +52,7 @@ class Variable : public DataSet {
   /**
    * Creating a variable from an existing data set.
    *
-   * @param rhs
+   * @param rhs right hand side
    */
   Variable(const AbstractDataSet& rhs) : DataSet(rhs, rhs.id()) {
     if (IsGlobal())
@@ -203,8 +205,7 @@ class Variable : public DataSet {
    * Read the data for this Variable
    *
    * @param hyperslab Hyperslabs to be read
-   * @param values data read
-   * @return a reference on the data read
+   * @return a new container on the data read
    */
   template <class T>
   std::valarray<T> Read(const Hyperslab& hyperslab) const {
@@ -231,14 +232,42 @@ class Variable : public DataSet {
   }
 
   /**
+   * Read all the data for this Variable, mask data that are considered as
+   * missing with the provided value and deflate read values
+   *
+   * @param missing_value the value that represents the "missing" value
+   * @return a new container on the data read
+   */
+  template <class T>
+  std::valarray<T> ReadMaskAndScale(
+      const Hyperslab& hyperslab,
+      const double missing_value = std::numeric_limits<T>::quiet_NaN()) const {
+    ScaleMissing scale_missing(*this);
+    return scale_missing.MaskAndDeflate(Read<T>(hyperslab), missing_value);
+  }
+
+  /**
    * Read all the data for this Variable
    *
-   * @param values data read
-   * @return a reference on the data read
+   * @return a new container on the data read
    */
   template <class T>
   std::valarray<T> Read() const {
     return Read<T>(Hyperslab(GetShape()));
+  }
+
+  /**
+   * Read all the data for this Variable, mask data that are considered as
+   * missing with the provided value and deflate read values
+   *
+   * @param missing_value the value that represents the "missing" value
+   * @return a new container on the data read
+   */
+  template <class T>
+  std::valarray<T> ReadMaskAndScale(
+      const double missing_value = std::numeric_limits<T>::quiet_NaN()) const {
+    ScaleMissing scale_missing(*this);
+    return scale_missing.MaskAndDeflate(Read<T>(), missing_value);
   }
 
   /**
@@ -277,6 +306,36 @@ class Variable : public DataSet {
     }
   }
 
+#define _NETCDF4CXX_WRITE_VAR(_type)                                         \
+  void Write(const Hyperslab& hyperslab, const std::valarray<_type>& values) \
+      const;
+
+  _NETCDF4CXX_WRITE_VAR(signed char)
+  _NETCDF4CXX_WRITE_VAR(unsigned char)
+  _NETCDF4CXX_WRITE_VAR(short)
+  _NETCDF4CXX_WRITE_VAR(unsigned short)
+  _NETCDF4CXX_WRITE_VAR(int)
+  _NETCDF4CXX_WRITE_VAR(unsigned int)
+  _NETCDF4CXX_WRITE_VAR(long long)
+  _NETCDF4CXX_WRITE_VAR(unsigned long long)
+  _NETCDF4CXX_WRITE_VAR(float)
+  _NETCDF4CXX_WRITE_VAR(double)
+
+  /**
+   * Set all values in the given array that are considered as "missing" using
+   * the _FillValue defined, inflate data with scale and offset values defined
+   * and write values
+   *
+   * @param hyperslab Hyperslabs to be write
+   * @param values values to write
+   */
+  template <typename T>
+  void MaskInflateAndWrite(const Hyperslab& hyperslab,
+                           const std::valarray<T>& values) {
+    ScaleMissing scale_missing(*this);
+    Write<T>(hyperslab, scale_missing.MaskAndInflate(values));
+  }
+
   /**
    * Write all data for this variable
    *
@@ -286,6 +345,34 @@ class Variable : public DataSet {
   void Write(std::valarray<T>& values) const {
     Write(Hyperslab(), values);
   }
+
+  /**
+   * Set all values in the given array that are considered as "missing" using
+   * the _FillValue defined, inflate data with scale and offset values defined
+   * and write values
+   *
+   * @param values values to write
+   */
+  template <typename T>
+  void MaskInflateAndWrite(const std::valarray<T>& values) {
+    ScaleMissing scale_missing(*this);
+    Write<T>(scale_missing.MaskAndInflate(values));
+  }
 };
+
+#define _NETCDF4CXX_READ_VAR(_type) \
+  template <>                       \
+  std::valarray<_type> Variable::Read(const Hyperslab& hyperslab) const;
+
+_NETCDF4CXX_READ_VAR(signed char)
+_NETCDF4CXX_READ_VAR(unsigned char)
+_NETCDF4CXX_READ_VAR(short)
+_NETCDF4CXX_READ_VAR(unsigned short)
+_NETCDF4CXX_READ_VAR(int)
+_NETCDF4CXX_READ_VAR(unsigned int)
+_NETCDF4CXX_READ_VAR(long long)
+_NETCDF4CXX_READ_VAR(unsigned long long)
+_NETCDF4CXX_READ_VAR(float)
+_NETCDF4CXX_READ_VAR(double)
 
 }  // namespace netcdf
