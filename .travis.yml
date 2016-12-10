@@ -8,6 +8,6 @@ os:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install wget m4 libhdf5-serial-dev cmake libboost-system-dev libboost-filesystem-dev libboost-test-dev libudunits2-dev -qq
-  - cd /tmp && wget https://github.com/Unidata/netcdf-c/archive/v4.4.1.tar.gz && tar -xvf v4.4.1.tar.gz && cd netcdf-c-4.4.1 && ./configure && sudo make -j 4 install
+  - cd /tmp && wget https://github.com/Unidata/netcdf-c/archive/v4.4.1.tar.gz && tar -xvf v4.4.1.tar.gz && cd netcdf-c-4.4.1 && ./configure && sudo make -j 4 install > /dev/null 2>&1
 script:
   - mkdir build && cd build && cmake .. && make all -j 4 && make test
