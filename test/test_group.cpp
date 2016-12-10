@@ -192,11 +192,25 @@ BOOST_AUTO_TEST_CASE(test_walk) {
   BOOST_CHECK(d.FindGroup("c") == nullptr);
 }
 
-// BOOST_AUTO_TEST_CASE(test_split) {
-//   auto result = netcdf::Group::SplitGroupsAndVariable("a");
-//   for (const auto& item : result.first) {
-//     std::cout << item << std::endl;
-//   }
-// }
+BOOST_AUTO_TEST_CASE(test_split) {
+  auto result = netcdf::Group::SplitGroupsAndVariable("a/b/c");
+  BOOST_REQUIRE(result.first.size() == 2);
+  BOOST_CHECK_EQUAL(result.first.front(), "a");
+  result.first.pop_front();
+  BOOST_CHECK_EQUAL(result.first.front(), "b");
+  BOOST_CHECK_EQUAL(result.second, "c");
+  
+  result = netcdf::Group::SplitGroupsAndVariable("a/b/");
+  BOOST_REQUIRE(result.first.size() == 2);
+  BOOST_CHECK_EQUAL(result.first.front(), "a");
+  result.first.pop_front();
+  BOOST_CHECK_EQUAL(result.first.front(), "b");
+  BOOST_CHECK_EQUAL(result.second, "");
+
+  result = netcdf::Group::SplitGroupsAndVariable("/");
+  BOOST_REQUIRE(result.first.size() == 1);
+  BOOST_CHECK_EQUAL(result.first.front(), "");
+  BOOST_CHECK_EQUAL(result.second, "");
+}
 
 BOOST_AUTO_TEST_SUITE_END()

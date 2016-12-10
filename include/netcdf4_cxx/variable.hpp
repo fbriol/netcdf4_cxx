@@ -268,7 +268,7 @@ class Variable : public DataSet {
   std::valarray<T> ReadMaskAndScale(
       const double missing_value = std::numeric_limits<T>::quiet_NaN()) const {
     ScaleMissing scale_missing(*this);
-    std::valarray<T> values = Read<T>(hyperslab);
+    std::valarray<T> values = Read<T>();
     return scale_missing.MaskAndDeflate(values, missing_value);
   }
 
