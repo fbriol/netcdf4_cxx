@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_CASE(test_split) {
   result.first.pop_front();
   BOOST_CHECK_EQUAL(result.first.front(), "b");
   BOOST_CHECK_EQUAL(result.second, "c");
-  
+
   result = netcdf::Group::SplitGroupsAndVariable("a/b/");
   BOOST_REQUIRE(result.first.size() == 2);
   BOOST_CHECK_EQUAL(result.first.front(), "a");
