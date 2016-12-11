@@ -99,32 +99,32 @@ BOOST_AUTO_TEST_CASE(test_unlimited) {
   BOOST_CHECK_EQUAL(y.IsUnlimited(), true);
 }
 
-#define TEST_RW(NAME, TYPE, NCTYPE)                                            \
-  BOOST_AUTO_TEST_CASE(NAME) {                                                 \
-    Object object;                                                             \
-    std::vector<size_t> shape({64, 128});                                      \
-    std::vector<int> dimid(2);                                                 \
-    int varid;                                                                 \
-                                                                               \
-    nc_def_dim(object.nc_id(), "x", shape[0], &dimid[0]);                      \
-    nc_def_dim(object.nc_id(), "y", NC_UNLIMITED, &dimid[1]);                  \
-    nc_def_var(object.nc_id(), "m", NCTYPE, shape.size(), &dimid[0], &varid);  \
-                                                                               \
-    netcdf::Variable netcdf_var(object, varid);                                \
-    std::valarray<TYPE> cpp_var_ref(64 * 128);                                 \
-    std::valarray<TYPE> cpp_var_res;                                           \
-                                                                               \
-    for (size_t i = 0; i < cpp_var_res.size(); ++i) {                          \
-      cpp_var_ref[i] = static_cast<TYPE>(i);                                   \
-    }                                                                          \
-                                                                               \
-    netcdf_var.Write(netcdf::Hyperslab(shape), cpp_var_ref);                   \
-    cpp_var_res = netcdf_var.Read<TYPE>();                                     \
-                                                                               \
-    BOOST_REQUIRE(cpp_var_ref.size() == cpp_var_res.size());                   \
-    for (size_t i = 0; i < cpp_var_ref.size(); ++i) {                          \
-      BOOST_CHECK_EQUAL(cpp_var_ref[i], cpp_var_res[i]);                       \
-    }                                                                          \
+#define TEST_RW(NAME, TYPE, NCTYPE)                                           \
+  BOOST_AUTO_TEST_CASE(NAME) {                                                \
+    Object object;                                                            \
+    std::vector<size_t> shape({64, 128});                                     \
+    std::vector<int> dimid(2);                                                \
+    int varid;                                                                \
+                                                                              \
+    nc_def_dim(object.nc_id(), "x", shape[0], &dimid[0]);                     \
+    nc_def_dim(object.nc_id(), "y", NC_UNLIMITED, &dimid[1]);                 \
+    nc_def_var(object.nc_id(), "m", NCTYPE, shape.size(), &dimid[0], &varid); \
+                                                                              \
+    netcdf::Variable netcdf_var(object, varid);                               \
+    std::valarray<TYPE> cpp_var_ref(64 * 128);                                \
+    std::valarray<TYPE> cpp_var_res;                                          \
+                                                                              \
+    for (size_t i = 0; i < cpp_var_res.size(); ++i) {                         \
+      cpp_var_ref[i] = static_cast<TYPE>(i);                                  \
+    }                                                                         \
+                                                                              \
+    netcdf_var.Write(netcdf::Hyperslab(shape), cpp_var_ref);                  \
+    cpp_var_res = netcdf_var.Read<TYPE>();                                    \
+                                                                              \
+    BOOST_REQUIRE(cpp_var_ref.size() == cpp_var_res.size());                  \
+    for (size_t i = 0; i < cpp_var_ref.size(); ++i) {                         \
+      BOOST_CHECK_EQUAL(cpp_var_ref[i], cpp_var_res[i]);                      \
+    }                                                                         \
   }
 
 TEST_RW(test_byte, signed char, NC_BYTE)
